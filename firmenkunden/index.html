@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beratungseinstieg Firmenkunden – Allianz Gretzinger</title>
+  <style>
+    :root {
+      --blue:        #003781;
+      --blue-mid:    #0057A8;
+      --blue-btn:    #0066CC;
+      --blue-light:  #E8EFF8;
+      --orange:      #FF6200;
+      --bg:          #F2F4F6;
+      --bg-card:     #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #5A6472;
+      --label:       #8C96A2;
+      --border:      #D8DCE0;
+      --border-lt:   #EAEEF2;
+      --radius:      4px;
+      --radius-md:   6px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5;
+    }
+
+    /* ── SETUP ──────────────────────────────────────────────── */
+    #setup-overlay {
+      position: fixed; inset: 0; background: rgba(0,20,50,0.55);
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .setup-modal {
+      background: var(--bg-card); border-radius: var(--radius-md);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.22); width: 600px; overflow: hidden;
+    }
+    .setup-modal-header {
+      background: var(--blue); padding: 20px 28px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .logo-circle {
+      width: 34px; height: 34px; border-radius: 50%; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900; color: var(--blue);
+    }
+    .setup-modal-header h2 { font-size: 16px; font-weight: 600; color: #fff; }
+    .setup-modal-header p  { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+    .setup-body { padding: 24px 28px 0; }
+    .setup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .setup-field { margin-bottom: 18px; }
+    .setup-field.full { grid-column: 1 / -1; }
+    .field-label {
+      display: block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--label); margin-bottom: 6px;
+    }
+    .setup-input, .setup-select {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 14px; color: var(--text);
+      background: #fff; outline: none; font-family: inherit;
+      transition: border-color 150ms;
+    }
+    .setup-input:focus, .setup-select:focus {
+      border-color: var(--blue-mid); box-shadow: 0 0 0 2px rgba(0,87,168,.12);
+    }
+    .team-sel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .team-sel-card {
+      padding: 12px 8px; border: 1px solid var(--border); border-radius: var(--radius);
+      cursor: pointer; text-align: center; background: #FAFBFC; transition: all 150ms; user-select: none;
+    }
+    .team-sel-card:hover { border-color: var(--blue-mid); }
+    .team-sel-card.selected { border-color: var(--blue); background: var(--blue-light); }
+    .team-sel-photo {
+      width: 44px; height: 44px; border-radius: 50%; overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 8px; font-size: 14px; font-weight: 700; color: #fff;
+    }
+    .team-sel-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .ts-name { font-size: 12px; font-weight: 700; color: var(--text); }
+    .ts-role { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .setup-footer {
+      padding: 16px 28px 24px; display: flex; justify-content: flex-end;
+      border-top: 1px solid var(--border-lt); margin-top: 20px;
+    }
+    .btn-modal-start {
+      padding: 10px 28px; background: var(--blue-btn); color: #fff; border: none;
+      border-radius: var(--radius); font-size: 12px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: background 150ms, opacity 150ms;
+    }
+    .btn-modal-start:hover:not(:disabled) { background: var(--blue); }
+    .btn-modal-start:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── APP SHELL ───────────────────────────────────────────── */
+    #app { display: flex; flex-direction: column; min-height: 100vh; }
+    .top-bar { background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .top-bar-inner { max-width: 1280px; margin: 0 auto; padding: 0 24px; height: 52px; display: flex; align-items: center; gap: 14px; }
+    .app-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .app-title { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .firmen-badge {
+      padding: 2px 8px; background: var(--orange); color: #fff;
+      border-radius: 3px; font-size: 10px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; flex-shrink: 0;
+    }
+    .divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+    .step-nav { display: flex; align-items: center; flex: 1; overflow: hidden; }
+    .step-nav-item { display: flex; align-items: center; gap: 7px; padding: 0 2px; cursor: default; flex-shrink: 0; }
+    .step-nav-item + .step-nav-item::before { content: ''; width: 18px; height: 1px; background: var(--border); flex-shrink: 0; margin-right: 2px; }
+    .step-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); background: #fff; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--label); flex-shrink: 0; transition: all 200ms; }
+    .step-nav-item.done .step-dot { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); }
+    .step-nav-item.active .step-dot { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .step-label { font-size: 12px; color: var(--label); font-weight: 500; white-space: nowrap; }
+    .step-nav-item.active .step-label { color: var(--blue); font-weight: 700; }
+    .step-nav-item.done .step-label { color: var(--blue-mid); }
+    .top-right { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-shrink: 0; }
+    .top-name-badge { font-size: 12px; color: var(--muted); padding: 4px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: #FAFBFC; white-space: nowrap; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+    .top-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; }
+    .top-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+    /* ── PAGE ────────────────────────────────────────────────── */
+    .page-content { flex: 1; max-width: 1100px; width: 100%; margin: 0 auto; padding: 0 24px; }
+    .page-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 26px 0 18px; gap: 24px; }
+    .page-header-text { flex: 1; }
+    .ph-question { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .ph-title { font-size: 26px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
+    .ph-illus { width: 130px; height: 86px; flex-shrink: 0; }
+    .ph-illus svg { width: 100%; height: 100%; }
+    .screen { display: none; flex: 1; padding-bottom: 80px; }
+    .screen.active { display: block; animation: fadeIn 220ms ease; }
+    #screen-1.active { display: flex; flex-direction: column; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    .card { background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,.07); }
+
+    /* ── SCREEN 1 ────────────────────────────────────────────── */
+    .welcome-block { background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: var(--radius-md); padding: 34px 42px; margin-bottom: 14px; }
+    .welcome-greeting { font-size: 32px; font-weight: 700; color: var(--blue); letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 10px; }
+    .welcome-sub { font-size: 15px; color: var(--muted); line-height: 1.65; max-width: 560px; }
+    .welcome-chips { display: flex; gap: 10px; margin-top: 22px; }
+    .chip { display: flex; align-items: center; gap: 6px; padding: 5px 14px; background: var(--blue-light); border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--blue); }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+    .chip-orange { background: #FFF0E8; color: var(--orange); }
+    .chip-orange .chip-dot { background: var(--orange); }
+    .tab-group { display: flex; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .tab-opt { flex: 1; position: relative; }
+    .tab-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .tab-opt label { display: flex; align-items: center; justify-content: center; padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--muted); background: #FAFBFC; cursor: pointer; border-right: 1px solid var(--border); transition: all 150ms; }
+    .tab-opt:last-child label { border-right: none; }
+    .tab-opt input:checked + label { background: var(--blue); color: #fff; }
+    .welcome-info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .wic { background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: var(--radius-md); padding: 18px 20px; }
+    .wic-num { font-size: 22px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+    .wic-label { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .wic-desc { font-size: 12px; color: var(--muted); }
+    .welcome-steps { background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: var(--radius-md); overflow: hidden; }
+    .wstep { display: flex; align-items: flex-start; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--border-lt); }
+    .wstep:last-child { border-bottom: none; }
+    .wstep-num { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .wstep-inactive .wstep-num { background: var(--border); color: var(--muted); }
+    .wstep-text { font-size: 13px; color: var(--text); line-height: 1.55; }
+    .wstep-inactive .wstep-text { color: var(--muted); }
+
+    /* ── SCREEN 2 ────────────────────────────────────────────── */
+    .contact-card { padding: 26px 30px; }
+    .contact-profile-row { display: flex; align-items: flex-start; gap: 20px; }
+    .avatar-xl { width: 80px; height: 80px; border-radius: 50%; background: var(--blue); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: #fff; }
+    .avatar-xl img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .contact-name { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .role-pill { display: inline-block; padding: 2px 10px; background: var(--blue-light); color: var(--blue); border-radius: 2px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 10px; }
+    .contact-bio { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .contact-details { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .detail-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+    .detail-icon { width: 26px; height: 26px; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--border-lt); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .detail-icon svg { width: 13px; height: 13px; fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .steckbrief { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border-lt); }
+    .steckbrief-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--label); margin-bottom: 12px; }
+    .steckbrief-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
+    .sb-tile { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1px solid var(--border-lt); border-radius: var(--radius); padding: 10px 12px; }
+    .sb-icon { width: 28px; height: 28px; border-radius: var(--radius); background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sb-icon svg { width: 14px; height: 14px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .sb-label { font-size: 10px; font-weight: 700; color: var(--label); text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px; }
+    .sb-value { font-size: 12px; color: var(--text); line-height:1.45; }
+
+    /* ── SCREEN 3 ────────────────────────────────────────────── */
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .team-card { padding: 24px 18px; text-align: center; }
+    .team-card.highlight { border-color: var(--blue); border-width: 2px; }
+    .avatar-md { width: 72px; height: 72px; border-radius: 50%; background: var(--blue); overflow: hidden; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 18px; font-weight: 700; color: #fff; }
+    .avatar-md img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .tm-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .tm-role { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--blue-mid); margin-bottom: 8px; }
+    .tm-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .active-badge { display: inline-block; margin-top: 12px; padding: 2px 10px; background: var(--blue-light); color: var(--blue); border-radius: 2px; font-size: 11px; font-weight: 700; }
+
+    /* ── SCREEN 4 ────────────────────────────────────────────── */
+    .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .q-card { padding: 16px 18px; }
+    .q-card.full { grid-column: 1 / -1; }
+    .q-num { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-mid); margin-bottom: 5px; }
+    .q-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; margin-bottom: 10px; }
+    .q-textarea { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text); font-family: inherit; resize: vertical; min-height: 56px; background: #FAFBFC; outline: none; transition: border-color 150ms; }
+    .q-textarea:focus { border-color: var(--blue-mid); background: #fff; }
+    .slider-wrap { display: flex; flex-direction: column; gap: 7px; }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--label); }
+    .slider-track { position: relative; padding: 8px 0; }
+    .q-slider { width: 100%; appearance: none; height: 4px; border-radius: 2px; background: var(--border); outline: none; cursor: pointer; }
+    .q-slider::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--blue); cursor: pointer; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,55,129,.3); }
+    .slider-center-mark { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 2px; height: 100%; background: var(--border); pointer-events: none; }
+    .pill-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill { padding: 5px 14px; border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--muted); cursor: pointer; transition: all 150ms; user-select: none; }
+    .pill:hover { border-color: var(--blue-mid); }
+    .pill.checked { background: var(--blue-light); border-color: var(--blue); color: var(--blue); font-weight: 600; }
+    .radio-list { display: flex; flex-direction: column; gap: 6px; }
+    .radio-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; font-size: 13px; color: var(--muted); transition: all 150ms; user-select: none; }
+    .radio-item:hover { border-color: var(--blue-mid); }
+    .radio-item.selected { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+    .r-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--border); flex-shrink: 0; transition: all 150ms; }
+    .radio-item.selected .r-dot { background: var(--blue); border-color: var(--blue); }
+
+    /* ── SCREEN 5 ────────────────────────────────────────────── */
+    .steps-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 14px; }
+    .step-block { padding: 20px 16px; }
+    .step-num { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .step-block h3 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .step-block p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .closing-banner { margin-top: 16px; background: var(--blue); border-radius: var(--radius-md); padding: 22px 28px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .closing-banner-text h3 { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .closing-banner-text p { font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.55; }
+    .btn-pdf { flex-shrink: 0; padding: 10px 22px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.4); border-radius: var(--radius); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: background 150ms; white-space: nowrap; }
+    .btn-pdf:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── FOOTER NAV ──────────────────────────────────────────── */
+    .footer-nav { position: sticky; bottom: 0; background: var(--bg-card); border-top: 1px solid var(--border); z-index: 50; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-info { font-size: 12px; color: var(--label); }
+    .footer-btns { display: flex; gap: 8px; }
+    .btn-back { padding: 8px 20px; background: transparent; border: 1px solid var(--border); border-radius: var(--radius); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); cursor: pointer; transition: all 150ms; }
+    .btn-back:hover { border-color: var(--muted); color: var(--text); }
+    .btn-next { padding: 8px 24px; background: var(--blue-btn); border: none; border-radius: var(--radius); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #fff; cursor: pointer; transition: background 150ms; }
+    .btn-next:hover { background: var(--blue); }
+  </style>
+</head>
+<body>
+
+<!-- ── SETUP MODAL ──────────────────────────────────── -->
+<div id="setup-overlay">
+  <div class="setup-modal">
+    <div class="setup-modal-header">
+      <div class="logo-circle">A</div>
+      <div>
+        <h2>Beratungseinstieg Firmenkunden</h2>
+        <p>Allianz Agentur Gretzinger · Sitzung einrichten</p>
+      </div>
+    </div>
+    <div class="setup-body">
+      <div class="setup-grid">
+        <div class="setup-field">
+          <label class="field-label" for="company-name">Unternehmensname</label>
+          <input type="text" id="company-name" class="setup-input" placeholder="z. B. Muster GmbH" autocomplete="off">
+        </div>
+        <div class="setup-field">
+          <label class="field-label" for="contact-name">Ansprechpartner</label>
+          <input type="text" id="contact-name" class="setup-input" placeholder="z. B. Herr Müller oder Thomas" autocomplete="off">
+        </div>
+        <div class="setup-field full">
+          <label class="field-label">Ansprache</label>
+          <div class="tab-group">
+            <div class="tab-opt"><input type="radio" name="ansprache" id="ansprache-sie" value="sie" checked><label for="ansprache-sie">Sie</label></div>
+            <div class="tab-opt"><input type="radio" name="ansprache" id="ansprache-du" value="du"><label for="ansprache-du">Du</label></div>
+            <div class="tab-opt"><input type="radio" name="ansprache" id="ansprache-ihr" value="ihr"><label for="ansprache-ihr">Ihr</label></div>
+          </div>
+        </div>
+        <div class="setup-field">
+          <label class="field-label" for="contact-position">Funktion / Position</label>
+          <select id="contact-position" class="setup-select">
+            <option value="Geschäftsführer">Geschäftsführer</option>
+            <option value="Inhaber">Inhaber</option>
+            <option value="Prokurist">Prokurist</option>
+            <option value="Gesellschafter">Gesellschafter</option>
+            <option value="Personalleiter">Personalleiter</option>
+            <option value="Sonstiges">Sonstiges</option>
+          </select>
+        </div>
+        <div class="setup-field">
+          <label class="field-label" for="employee-count">Mitarbeiteranzahl</label>
+          <select id="employee-count" class="setup-select">
+            <option value="1 Mitarbeiter (Solo)">1 Mitarbeiter (Solo)</option>
+            <option value="2–5 Mitarbeiter">2–5 Mitarbeiter</option>
+            <option value="6–20 Mitarbeiter">6–20 Mitarbeiter</option>
+            <option value="21–50 Mitarbeiter">21–50 Mitarbeiter</option>
+            <option value="über 50 Mitarbeiter">über 50 Mitarbeiter</option>
+          </select>
+        </div>
+        <div class="setup-field full">
+          <label class="field-label">Gesprächsführung</label>
+          <div class="team-sel-grid" id="team-sel-grid"></div>
+        </div>
+      </div>
+    </div>
+    <div class="setup-footer">
+      <button class="btn-modal-start" id="btn-start" disabled onclick="startPresentation()">
+        Beratung starten
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── APP SHELL ────────────────────────────────────── -->
+<div id="app" style="display:none;">
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div class="app-logo">
+        <div class="logo-circle">A</div>
+        <span class="app-title">Beratungseinstieg</span>
+        <span class="firmen-badge">Firmenkunden</span>
+      </div>
+      <div class="divider"></div>
+      <nav class="step-nav" id="step-nav"></nav>
+      <div class="top-right">
+        <div class="top-name-badge" id="top-name">Unternehmen</div>
+        <div class="top-avatar" id="top-avatar">AG</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Screen 1: Willkommen -->
+    <div class="screen" id="screen-1">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question">Herzlich Willkommen</p>
+          <h1 class="ph-title" id="s1-title">Schön, dass Sie da sind.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="72" ry="7" fill="#E8EFF8"/>
+            <!-- Gebäude / Firma Illustration -->
+            <rect x="30" y="50" width="60" height="62" rx="4" fill="#ADC4E0"/>
+            <rect x="38" y="62" width="12" height="12" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="58" y="62" width="12" height="12" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="78" y="62" width="8" height="12" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="38" y="82" width="12" height="12" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="58" y="82" width="12" height="12" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="48" y="97" width="14" height="15" rx="2" fill="#0057A8"/>
+            <rect x="110" y="60" width="56" height="52" rx="4" fill="#C2D5EC"/>
+            <rect x="118" y="72" width="10" height="10" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="134" y="72" width="10" height="10" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="118" y="88" width="10" height="10" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="134" y="88" width="10" height="10" rx="2" fill="#fff" opacity=".7"/>
+            <rect x="123" y="100" width="12" height="12" rx="2" fill="#003781"/>
+            <circle cx="165" cy="28" r="5" fill="#FF6200" opacity="0.55"/>
+            <circle cx="35" cy="32" r="3" fill="#FF6200" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="welcome-block">
+        <div class="welcome-greeting" id="s1-greeting">Herzlich Willkommen.</div>
+        <p class="welcome-sub" id="s1-sub">
+          Schön, dass Sie heute hier sind. Wir möchten Sie und Ihr Unternehmen kennenlernen – und verstehen, was Ihnen in der Zusammenarbeit wirklich wichtig ist.
+        </p>
+      </div>
+
+      <div class="welcome-steps">
+        <div class="wstep"><div class="wstep-num">1</div><div class="wstep-text"><strong>Kennenlernen</strong> – Wir stellen uns und unser Team kurz vor.</div></div>
+        <div class="wstep"><div class="wstep-num">2</div><div class="wstep-text"><strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz.</div></div>
+        <div class="wstep"><div class="wstep-num">3</div><div class="wstep-text"><strong>Risikoprofil ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Ihr Unternehmen und Sie persönlich relevant sind.</div></div>
+        <div class="wstep wstep-inactive"><div class="wstep-num">4</div><div class="wstep-text"><strong>Analyse</strong> – Auf Basis Ihrer Unterlagen erstellen wir eine strukturierte Auswertung und entscheiden gemeinsam, ob eine Zusammenarbeit sinnvoll ist.</div></div>
+        <div class="wstep wstep-inactive"><div class="wstep-num">5</div><div class="wstep-text"><strong>Umsetzungsgespräch</strong> – Im zweiten Termin legen wir gemeinsam fest, welche Themen wir umsetzen.</div></div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Ansprechpartner -->
+    <div class="screen" id="screen-2">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question">Wer begleitet Sie heute?</p>
+          <h1 class="ph-title">Ihr Ansprechpartner</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="58" ry="7" fill="#E8EFF8"/>
+            <circle cx="100" cy="48" r="26" fill="#ADC4E0"/>
+            <rect x="66" y="78" width="68" height="38" rx="9" fill="#003781"/>
+            <circle cx="134" cy="28" r="6" fill="#FF6200" opacity="0.55"/>
+          </svg>
+        </div>
+      </div>
+      <div class="card contact-card">
+        <div class="contact-profile-row">
+          <div class="avatar-xl" id="s2-avatar">
+            <img id="s2-photo" src="" alt="" style="display:none;">
+            <span id="s2-initials">AG</span>
+          </div>
+          <div style="flex:1;">
+            <div class="contact-name" id="s2-name">Adrian Gretzinger</div>
+            <div class="role-pill" id="s2-role">Agenturinhaber</div>
+            <p class="contact-bio" id="s2-bio">Firmen- und Privatkundenberater. Direkter Ansprechpartner für Versicherung und Vorsorge.</p>
+            <div class="contact-details">
+              <div class="detail-row">
+                <div class="detail-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg></div>
+                <span id="s2-email">adrian.gretzinger@allianz.de</span>
+              </div>
+              <div class="detail-row">
+                <div class="detail-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6.23 6.23l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+                <span id="s2-phone">07524 91122</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="steckbrief" id="s2-steckbrief-block">
+          <div class="steckbrief-title">Steckbrief</div>
+          <div class="steckbrief-grid" id="s2-steckbrief"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Team -->
+    <div class="screen" id="screen-3">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question">Das Team hinter Ihrer Beratung</p>
+          <h1 class="ph-title">Wer sich um Sie kümmert.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="72" ry="7" fill="#E8EFF8"/>
+            <circle cx="68" cy="46" r="15" fill="#ADC4E0"/>
+            <rect x="52" y="66" width="32" height="36" rx="6" fill="#0057A8"/>
+            <circle cx="132" cy="46" r="15" fill="#C2D5EC"/>
+            <rect x="116" y="66" width="32" height="36" rx="6" fill="#003781"/>
+            <circle cx="100" cy="40" r="17" fill="#8BAED4"/>
+            <rect x="82" y="62" width="36" height="40" rx="7" fill="#0066CC"/>
+          </svg>
+        </div>
+      </div>
+      <div class="team-grid" id="team-grid"></div>
+    </div>
+
+    <!-- Screen 4: Erwartungen -->
+    <div class="screen" id="screen-4">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question">Was Ihnen wichtig ist</p>
+          <h1 class="ph-title">Ihre Erwartungen.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="65" ry="7" fill="#E8EFF8"/>
+            <rect x="40" y="28" width="50" height="62" rx="6" fill="#fff" stroke="#D8DCE0" stroke-width="1.5"/>
+            <line x1="50" y1="45" x2="80" y2="45" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
+            <line x1="50" y1="56" x2="75" y2="56" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
+            <line x1="50" y1="67" x2="70" y2="67" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
+            <rect x="110" y="40" width="50" height="50" rx="6" fill="#fff" stroke="#D8DCE0" stroke-width="1.5"/>
+            <circle cx="135" cy="58" r="10" fill="#E8EFF8" stroke="#0057A8" stroke-width="1.5"/>
+            <path d="M130 58 l3 3 6-6" stroke="#0057A8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <line x1="115" y1="75" x2="155" y2="75" stroke="#D8DCE0" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="115" y1="82" x2="148" y2="82" stroke="#D8DCE0" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="165" cy="24" r="5" fill="#FF6200" opacity="0.5"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="q-grid">
+
+        <!-- F1 -->
+        <div class="card q-card full">
+          <div class="q-num">Frage 01</div>
+          <p class="q-text">Was zeichnet aus Ihrer Sicht einen sehr guten Unternehmensberater aus?</p>
+          <textarea id="q1" class="q-textarea" rows="2" placeholder="Gedanken, Erfahrungen …"></textarea>
+        </div>
+
+        <!-- F2 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 02</div>
+          <p class="q-text">Wie wichtig ist Ihnen ein fester Ansprechpartner für Ihr Unternehmen?</p>
+          <div class="slider-wrap">
+            <div class="slider-labels"><span>Weniger wichtig</span><span>Sehr wichtig</span></div>
+            <div class="slider-track">
+              <input id="q2" type="range" class="q-slider" min="1" max="10" value="5" step="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- F3 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 03</div>
+          <p class="q-text">Worauf legen Sie mehr Wert?</p>
+          <div class="slider-wrap">
+            <div class="slider-labels"><span>Preis</span><span>Leistung</span></div>
+            <div class="slider-track">
+              <input id="q4" type="range" class="q-slider" min="1" max="11" value="6" step="1">
+              <div class="slider-center-mark"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F4 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 04</div>
+          <p class="q-text">Wie tief möchten Sie in fachliche Details einsteigen?</p>
+          <div class="slider-wrap">
+            <div class="slider-labels"><span>Jedes Detail</span><span>Alltagstaugliche Lösung</span></div>
+            <div class="slider-track">
+              <input id="q5" type="range" class="q-slider" min="1" max="10" value="5" step="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- F5 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 05</div>
+          <p class="q-text" id="q5-text"
+             data-sie="Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?"
+             data-du="Welche Erfahrungen hast du bisher mit Versicherungen gemacht?"
+             data-ihr="Welche Erfahrungen habt Ihr bisher mit Versicherungen gemacht?">
+            Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?
+          </p>
+          <textarea id="q3" class="q-textarea" rows="2" placeholder="Positiv, negativ – alles hilft …"></textarea>
+        </div>
+
+        <!-- F6 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 06</div>
+          <p class="q-text">Was ist für Sie der beste Kommunikationsweg?</p>
+          <div class="pill-group" id="q6">
+            <div class="pill" onclick="this.classList.toggle('checked')">Telefon</div>
+            <div class="pill" onclick="this.classList.toggle('checked')">E-Mail</div>
+            <div class="pill" onclick="this.classList.toggle('checked')">WhatsApp</div>
+            <div class="pill" onclick="this.classList.toggle('checked')">Post</div>
+          </div>
+        </div>
+
+        <!-- F7 -->
+        <div class="card q-card full">
+          <div class="q-num">Frage 07</div>
+          <p class="q-text" id="q7-text"
+             data-sie="Was beschäftigt Sie geschäftlich aktuell am meisten – wo sehen Sie die größten Risiken oder offenen Fragen für Ihr Unternehmen?"
+             data-du="Was beschäftigt dich geschäftlich aktuell am meisten – wo siehst du die größten Risiken oder offenen Fragen für dein Unternehmen?"
+             data-ihr="Was beschäftigt Euch geschäftlich aktuell am meisten – wo seht Ihr die größten Risiken oder offenen Fragen für Euer Unternehmen?">
+            Was beschäftigt Sie geschäftlich aktuell am meisten – wo sehen Sie die größten Risiken oder offenen Fragen für Ihr Unternehmen?
+          </p>
+          <textarea id="q7" class="q-textarea" rows="3" placeholder="Themen, Sorgen, offene Punkte …"></textarea>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Screen 5: Ablauf -->
+    <div class="screen" id="screen-5">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question">So läuft unser Gespräch heute ab</p>
+          <h1 class="ph-title">Unser Vorgehen.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="118" rx="65" ry="7" fill="#E8EFF8"/>
+            <circle cx="20" cy="65" r="11" fill="#0057A8"/>
+            <text x="20" y="70" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="Arial">1</text>
+            <line x1="31" y1="65" x2="55" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
+            <circle cx="66" cy="65" r="11" fill="#003781"/>
+            <text x="66" y="70" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="Arial">2</text>
+            <line x1="77" y1="65" x2="101" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
+            <circle cx="112" cy="65" r="11" fill="#0066CC"/>
+            <text x="112" y="70" text-anchor="middle" fill="white" font-size="11" font-weight="bold" font-family="Arial">3</text>
+            <line x1="123" y1="65" x2="147" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
+            <circle cx="158" cy="65" r="11" fill="#D8DCE0"/>
+            <text x="158" y="70" text-anchor="middle" fill="#8C96A2" font-size="11" font-weight="bold" font-family="Arial">4</text>
+            <line x1="169" y1="65" x2="183" y2="65" stroke="#D8DCE0" stroke-width="2" stroke-dasharray="4 3"/>
+            <circle cx="190" cy="65" r="7" fill="#D8DCE0"/>
+            <text x="190" y="69" text-anchor="middle" fill="#8C96A2" font-size="9" font-weight="bold" font-family="Arial">5</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="steps-row">
+        <div class="card step-block">
+          <div class="step-num">1</div>
+          <h3>Kennenlernen</h3>
+          <p>Wir stellen uns und unser Team kurz vor.</p>
+        </div>
+        <div class="card step-block">
+          <div class="step-num">2</div>
+          <h3>Erwartungen</h3>
+          <p>Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz.</p>
+        </div>
+        <div class="card step-block">
+          <div class="step-num">3</div>
+          <h3>Risikoprofil</h3>
+          <p>Gemeinsam schauen wir, welche Themen für Ihr Unternehmen und Sie persönlich relevant sind.</p>
+        </div>
+        <div class="card step-block" style="opacity:0.6;">
+          <div class="step-num" style="background:var(--border);color:var(--muted);">4</div>
+          <h3 style="color:var(--muted);">Analyse</h3>
+          <p>Auf Basis Ihrer Unterlagen erstellen wir eine strukturierte Auswertung.</p>
+        </div>
+        <div class="card step-block" style="opacity:0.6;">
+          <div class="step-num" style="background:var(--border);color:var(--muted);">5</div>
+          <h3 style="color:var(--muted);">Umsetzungsgespräch</h3>
+          <p>Im zweiten Termin legen Sie fest, welche Themen umgesetzt werden.</p>
+        </div>
+      </div>
+
+      <div class="closing-banner">
+        <div class="closing-banner-text">
+          <h3 id="s5-banner-title">Gibt es noch etwas, das Sie ansprechen möchten?</h3>
+          <p>Wenn alles passt, starten wir jetzt gemeinsam in Ihre Beratung.</p>
+        </div>
+        <button class="btn-pdf" onclick="generatePDF()">↓ Zusammenfassung als PDF</button>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+  <div class="footer-nav">
+    <div class="footer-inner">
+      <span class="footer-info" id="footer-info">Schritt 1 von 5</span>
+      <div class="footer-btns">
+        <button class="btn-back" id="btn-back" style="display:none;" onclick="navigate(-1)">← Zurück</button>
+        <button class="btn-next" id="btn-next" onclick="navigate(1)">Weiter →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const teamData = [
+    {
+      id: 'adrian', name: 'Adrian Gretzinger', role: 'Agenturinhaber',
+      bio: 'Firmen- und Privatkundenberater. Direkter Ansprechpartner für Versicherung und Vorsorge.',
+      desc: 'Firmen- & Privatkunden · Vorsorge · Strategie',
+      email: 'adrian.gretzinger@allianz.de', phone: '07524 91122',
+      initials: 'AG', photo: 'adrian-portrait.jpg', color: '#003781',
+      tiles: [
+        { icon: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>', label: 'Ausbildung', value: 'Sozialversicherungsfachangestellter & Krankenkassenbetriebswirt (AOK)' },
+        { icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>', label: 'Seit', value: '2017 bei der Allianz – Agenturinhaber' },
+        { icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>', label: 'Schwerpunkt', value: 'Firmenkunden & umfassende Privatkundenberatung' },
+        { icon: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>', label: 'Freizeit', value: 'Mountainbike & Golf' }
+      ]
+    },
+    {
+      id: 'diana', name: 'Diana Bajramov', role: 'Privatkundenberaterin',
+      bio: 'Privatkundenberaterin. Persönliche Beratung und Betreuung für alle Lebenslagen.',
+      desc: 'Privatkundenberatung · Persönliche Betreuung',
+      email: 'diana.bajramov@allianz.de', phone: '07524 91122',
+      initials: 'DB', photo: 'diana-portrait.jpg', color: '#0057A8', tiles: []
+    },
+    {
+      id: 'claudia', name: 'Claudia Schmid', role: 'Organisation',
+      bio: 'Interne Abläufe, Kundenanfragen, Vertragsservice und Betreuung.',
+      desc: 'Interne Abläufe · Kundenanfragen · Vertragsservice',
+      email: 'claudia.schmid1@allianz.de', phone: '07524 91122',
+      initials: 'CS', photo: 'claudia-portrait.jpg', color: '#0066CC', tiles: []
+    }
+  ];
+
+  const stepLabels = ['Willkommen', 'Kontakt', 'Team', 'Erwartungen', 'Ablauf'];
+  const state = { company: '', contact: '', position: '', employees: '', ansprache: 'sie', contactId: 'adrian', screen: 1, total: 5 };
+
+  function renderTeamSel() {
+    document.getElementById('team-sel-grid').innerHTML = teamData.map(p => `
+      <div class="team-sel-card ${p.id === state.contactId ? 'selected' : ''}" onclick="pickContact('${p.id}')">
+        <div class="team-sel-photo" style="background:${p.color}">
+          <img src="${p.photo}" alt="${p.name}" onerror="this.style.display='none'">
+        </div>
+        <div class="ts-name">${p.name.split(' ')[0]}</div>
+        <div class="ts-role">${p.role}</div>
+      </div>`).join('');
+  }
+
+  function pickContact(id) { state.contactId = id; renderTeamSel(); }
+
+  // Validierung: Start-Button erst aktiv wenn Unternehmensname + Ansprechpartner
+  function checkSetup() {
+    const c = document.getElementById('company-name').value.trim();
+    const n = document.getElementById('contact-name').value.trim();
+    document.getElementById('btn-start').disabled = !(c && n);
+  }
+  document.getElementById('company-name').addEventListener('input', checkSetup);
+  document.getElementById('contact-name').addEventListener('input', checkSetup);
+  document.querySelectorAll('input[name="ansprache"]').forEach(r => {
+    r.addEventListener('change', function() { state.ansprache = this.value; });
+  });
+
+  function startPresentation() {
+    state.company   = document.getElementById('company-name').value.trim();
+    state.contact   = document.getElementById('contact-name').value.trim();
+    state.position  = document.getElementById('contact-position').value;
+    state.employees = document.getElementById('employee-count').value;
+    state.ansprache = document.querySelector('input[name="ansprache"]:checked').value;
+    document.getElementById('setup-overlay').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    buildStepNav();
+    renderTeamGrid();
+    showScreen(1);
+  }
+
+  function buildStepNav() {
+    document.getElementById('step-nav').innerHTML = stepLabels.map((l, i) => `
+      <div class="step-nav-item" id="snav-${i+1}">
+        <div class="step-dot" id="sdot-${i+1}">${i+1}</div>
+        <div class="step-label">${l}</div>
+      </div>`).join('');
+  }
+
+  function navigate(dir) {
+    const n = state.screen + dir;
+    if (n < 1 || n > state.total) return;
+    showScreen(n);
+  }
+
+  function showScreen(n) {
+    for (let i = 1; i <= state.total; i++) {
+      const el = document.getElementById('screen-' + i);
+      el.style.display = 'none'; el.classList.remove('active');
+    }
+    const t = document.getElementById('screen-' + n);
+    t.style.display = 'block'; t.classList.add('active');
+    state.screen = n;
+    updateStepNav(n);
+    updateTexts();
+    updateFooter(n);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  function updateStepNav(n) {
+    for (let i = 1; i <= state.total; i++) {
+      const item = document.getElementById('snav-' + i);
+      const dot  = document.getElementById('sdot-' + i);
+      if (!item) continue;
+      item.classList.remove('active', 'done');
+      if (i < n)       { item.classList.add('done');   dot.innerHTML  = '✓'; }
+      else if (i === n){ item.classList.add('active'); dot.textContent = i; }
+      else             { dot.textContent = i; }
+    }
+    document.getElementById('footer-info').textContent = `Schritt ${n} von ${state.total}`;
+  }
+
+  function updateFooter(n) {
+    document.getElementById('btn-back').style.display = n > 1 ? 'inline-flex' : 'none';
+    document.getElementById('btn-next').style.display = n < state.total ? 'inline-flex' : 'none';
+  }
+
+  function updateTexts() {
+    const person = teamData.find(p => p.id === state.contactId) || teamData[0];
+
+    // Du/Sie/Ihr Texte
+    const a = state.ansprache;
+    document.querySelectorAll('[data-sie]').forEach(el => {
+      if (el.dataset[a] !== undefined) el.innerHTML = el.dataset[a];
+    });
+
+    // Screen 1
+    document.getElementById('s1-greeting').textContent = `Herzlich Willkommen, ${state.contact}.`;
+    const s1titles = {
+      sie: `Schön, dass Sie da sind, ${state.contact}.`,
+      du:  `Schön, dass du da bist, ${state.contact}.`,
+      ihr: `Schön, dass Ihr da seid, ${state.contact}.`
+    };
+    document.getElementById('s1-title').textContent = s1titles[a];
+
+    // Screen 2
+    document.getElementById('s2-avatar').style.background = person.color;
+    document.getElementById('s2-name').textContent  = person.name;
+    document.getElementById('s2-role').textContent  = person.role;
+    document.getElementById('s2-bio').textContent   = person.bio;
+    document.getElementById('s2-email').textContent = person.email;
+    document.getElementById('s2-phone').textContent = person.phone;
+    document.getElementById('s2-initials').textContent = person.initials;
+    const photo = document.getElementById('s2-photo');
+    photo.src = person.photo; photo.style.display = 'block';
+    document.getElementById('s2-initials').style.display = 'none';
+
+    const sbGrid = document.getElementById('s2-steckbrief');
+    if (person.tiles && person.tiles.length) {
+      sbGrid.innerHTML = person.tiles.map(t => `
+        <div class="sb-tile">
+          <div class="sb-icon"><svg viewBox="0 0 24 24">${t.icon}</svg></div>
+          <div><div class="sb-label">${t.label}</div><div class="sb-value">${t.value}</div></div>
+        </div>`).join('');
+      document.getElementById('s2-steckbrief-block').style.display = '';
+    } else {
+      document.getElementById('s2-steckbrief-block').style.display = 'none';
+    }
+
+    // Top Bar
+    document.getElementById('top-name').textContent = `${state.company} · ${state.contact}`;
+    const topAv = document.getElementById('top-avatar');
+    topAv.innerHTML = `<img src="${person.photo}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:50%;" onerror="this.style.display='none';this.parentElement.textContent='${person.initials}'">`;
+  }
+
+  function renderTeamGrid() {
+    document.getElementById('team-grid').innerHTML = teamData.map(p => `
+      <div class="card team-card ${p.id === state.contactId ? 'highlight' : ''}">
+        <div class="avatar-md" style="background:${p.color}">
+          <img src="${p.photo}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.textContent='${p.initials}'">
+        </div>
+        <div class="tm-name">${p.name}</div>
+        <div class="tm-role">${p.role}</div>
+        <p class="tm-desc">${p.desc}</p>
+        ${p.id === state.contactId ? '<span class="active-badge">Heute für Sie da</span>' : ''}
+      </div>`).join('');
+  }
+
+  function selectRadio(el) {
+    el.closest('.radio-list').querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  /* ── PDF ─────────────────────────────────────────── */
+  function generatePDF() {
+    const person = teamData.find(p => p.id === state.contactId) || teamData[0];
+    const now    = new Date();
+    const datum  = now.toLocaleDateString('de-DE', { day:'2-digit', month:'2-digit', year:'numeric' });
+    const uhr    = now.toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+
+    const q2val = parseInt(document.getElementById('q2').value);
+    const q2txt = q2val <= 2 ? 'Weniger wichtig' : q2val <= 4 ? 'Eher unwichtig' : q2val <= 6 ? 'Neutral' : q2val <= 8 ? 'Wichtig' : 'Sehr wichtig';
+    const q4val = parseInt(document.getElementById('q4').value);
+    const q4txt = q4val <= 2 ? 'Klar Preis' : q4val <= 4 ? 'Eher Preis' : q4val <= 7 ? 'Ausgewogen' : q4val <= 9 ? 'Eher Leistung' : 'Klar Leistung';
+    const q5val = parseInt(document.getElementById('q5').value);
+    const q5txt = q5val <= 2 ? 'Alle Details' : q5val <= 4 ? 'Eher detailliert' : q5val <= 6 ? 'Ausgewogen' : q5val <= 8 ? 'Eher pragmatisch' : 'Alltagstaugliche Lösung';
+    const q6checked = [...document.querySelectorAll('#q6 .pill.checked')].map(p => p.textContent).join(', ') || '–';
+    const q1txt = document.getElementById('q1').value.trim() || '–';
+    const q3txt = document.getElementById('q3').value.trim() || '–';
+    const q7txt = document.getElementById('q7').value.trim() || '–';
+    const anspracheLabel = { sie: 'Sie (formell)', du: 'Du (informell)', ihr: 'Ihr (Paar/Geschäftsführung)' }[state.ansprache];
+
+    const html = `<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8">
+<title>Beratungseinstieg Firmenkunden – ${state.company} – ${datum}</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 20mm 18mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system,'Segoe UI',Arial,sans-serif; font-size: 11pt; color: #1A1A1A; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 12px; border-bottom: 2px solid #003781; margin-bottom: 18px; }
+  .header h1 { font-size: 17pt; font-weight: 800; color: #003781; }
+  .badge { display: inline-block; padding: 2px 8px; background: #FF6200; color: #fff; border-radius: 3px; font-size: 9pt; font-weight: 700; margin-top: 4px; }
+  .header-right { text-align: right; font-size: 10pt; color: #5A6472; line-height: 1.6; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 18px; }
+  .meta-box { background: #F2F4F6; border-radius: 4px; padding: 8px 12px; }
+  .meta-box .lbl { font-size: 8pt; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #8C96A2; margin-bottom: 2px; }
+  .meta-box .val { font-size: 11pt; font-weight: 600; }
+  .sec { font-size: 10pt; font-weight: 700; color: #003781; text-transform: uppercase; letter-spacing: .06em; margin: 14px 0 8px; padding-bottom: 4px; border-bottom: 1px solid #EAEEF2; }
+  .q-row { margin-bottom: 12px; }
+  .q-lbl { font-size: 8pt; font-weight: 700; color: #8C96A2; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 2px; }
+  .q-q { font-size: 10pt; font-weight: 600; margin-bottom: 3px; }
+  .q-a { font-size: 10.5pt; background: #F8FAFC; border-left: 3px solid #003781; padding: 5px 10px; border-radius: 2px; }
+  .q-a.neu { border-left-color: #D8DCE0; color: #5A6472; font-style: italic; }
+  .footer { margin-top: 24px; padding-top: 8px; border-top: 1px solid #EAEEF2; font-size: 8.5pt; color: #9CA3AF; display: flex; justify-content: space-between; }
+</style></head><body>
+<div class="header">
+  <div>
+    <h1>Beratungseinstieg Firmenkunden</h1>
+    <div class="badge">FIRMENKUNDEN</div><br>
+    <span style="font-size:10pt;color:#5A6472;">Allianz Agentur Gretzinger · Kundenpräferenzen</span>
+  </div>
+  <div class="header-right"><strong>${datum}</strong><br>${uhr} Uhr<br>Erstellt von: ${person.name}</div>
+</div>
+<div class="meta-grid">
+  <div class="meta-box"><div class="lbl">Unternehmen</div><div class="val">${state.company}</div></div>
+  <div class="meta-box"><div class="lbl">Ansprechpartner</div><div class="val">${state.contact}</div></div>
+  <div class="meta-box"><div class="lbl">Funktion</div><div class="val">${state.position}</div></div>
+  <div class="meta-box"><div class="lbl">Mitarbeiter</div><div class="val">${state.employees}</div></div>
+  <div class="meta-box"><div class="lbl">Berater</div><div class="val">${person.name}</div></div>
+  <div class="meta-box"><div class="lbl">Ansprache</div><div class="val">${anspracheLabel}</div></div>
+</div>
+<div class="sec">Kundenpräferenzen aus dem Erstgespräch</div>
+<div class="q-row"><div class="q-lbl">Frage 01</div><div class="q-q">Was zeichnet einen sehr guten Unternehmensberater aus?</div><div class="q-a ${q1txt==='–'?'neu':''}">${q1txt}</div></div>
+<div class="q-row"><div class="q-lbl">Frage 02</div><div class="q-q">Wichtigkeit eines festen Ansprechpartners</div><div class="q-a">${q2txt} (${q2val}/10)</div></div>
+<div class="q-row"><div class="q-lbl">Frage 03</div><div class="q-q">Preis vs. Leistung</div><div class="q-a">${q4txt}</div></div>
+<div class="q-row"><div class="q-lbl">Frage 04</div><div class="q-q">Gewünschte Beratungstiefe</div><div class="q-a">${q5txt}</div></div>
+<div class="q-row"><div class="q-lbl">Frage 05</div><div class="q-q">Erfahrungen mit Versicherungen</div><div class="q-a ${q3txt==='–'?'neu':''}">${q3txt}</div></div>
+<div class="q-row"><div class="q-lbl">Frage 06</div><div class="q-q">Bevorzugter Kommunikationsweg</div><div class="q-a">${q6checked}</div></div>
+<div class="q-row"><div class="q-lbl">Frage 07</div><div class="q-q">Aktuelle Schwerpunkte / größte Risiken im Unternehmen</div><div class="q-a ${q7txt==='–'?'neu':''}">${q7txt}</div></div>
+<div class="footer"><span>Allianz Agentur Gretzinger · ${person.email} · ${person.phone}</span><span>Erstellt am ${datum} um ${uhr} Uhr</span></div>
+</body></html>`;
+
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 400);
+  }
+
+  // Init
+  state.contactId = 'adrian';
+  renderTeamSel();
+</script>
+</body>
+</html>
