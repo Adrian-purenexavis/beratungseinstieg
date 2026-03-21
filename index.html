@@ -232,6 +232,40 @@
     .wic-label { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
     .wic-desc { font-size: 12px; color: var(--muted); }
 
+    /* Welcome Steps Liste */
+    .welcome-steps {
+      background: var(--bg-card); border: 1px solid var(--border-lt);
+      border-radius: var(--radius-md); overflow: hidden;
+    }
+    .wstep {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 20px; border-bottom: 1px solid var(--border-lt);
+    }
+    .wstep:last-child { border-bottom: none; }
+    .wstep-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .wstep-inactive .wstep-num { background: var(--border); color: var(--muted); }
+    .wstep-text { font-size: 13px; color: var(--text); line-height: 1.55; }
+    .wstep-inactive .wstep-text { color: var(--muted); }
+
+    /* Steckbrief */
+    .steckbrief {
+      margin-top: 18px; padding-top: 18px;
+      border-top: 1px solid var(--border-lt);
+    }
+    .steckbrief-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--label); margin-bottom: 8px;
+    }
+    .steckbrief-text {
+      font-size: 13px; color: var(--muted); line-height: 1.65;
+    }
+
     /* ── SCREEN 2 ────────────────────────────────────────────── */
     .contact-layout { display: grid; grid-template-columns: 1fr; gap: 14px; }
     .contact-card { padding: 26px 30px; }
@@ -545,29 +579,14 @@
            data-ihr="Schön, dass Ihr heute hier seid. Wir möchten Euch kennenlernen – und verstehen, was Euch wirklich wichtig ist.">
           Schön, dass Sie heute hier sind. Wir möchten Sie kennenlernen – und verstehen, was Ihnen wirklich wichtig ist.
         </p>
-        <div class="welcome-chips">
-          <div class="chip"><div class="chip-dot"></div>Kein Formular</div>
-          <div class="chip"><div class="chip-dot"></div>Persönliches Gespräch</div>
-          <div class="chip"><div class="chip-dot"></div>ca. 5 Minuten</div>
-        </div>
       </div>
 
-      <div class="welcome-info-row">
-        <div class="wic">
-          <div class="wic-num">1.</div>
-          <div class="wic-label">Kennenlernen</div>
-          <div class="wic-desc">Wir stellen uns und unser Team kurz vor.</div>
-        </div>
-        <div class="wic">
-          <div class="wic-num">2.</div>
-          <div class="wic-label">Erwartungen</div>
-          <div class="wic-desc" id="s1-card2"
-               data-sie="Was Ihnen in der Beratung wichtig ist, besprechen wir kurz."
-               data-du="Was dir in der Beratung wichtig ist, besprechen wir kurz."
-               data-ihr="Was Euch in der Beratung wichtig ist, besprechen wir kurz.">
-            Was Ihnen in der Beratung wichtig ist, besprechen wir kurz.
-          </div>
-        </div>
+      <div class="welcome-steps">
+        <div class="wstep"><div class="wstep-num">1</div><div class="wstep-text"><strong>Kennenlernen</strong> – Wir stellen uns und unser Team kurz vor.</div></div>
+        <div class="wstep"><div class="wstep-num">2</div><div class="wstep-text" id="s1-card2" data-sie="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz." data-du="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für dich wichtig ist, besprechen wir kurz." data-ihr="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Euch wichtig ist, besprechen wir kurz."><strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz.</div></div>
+        <div class="wstep"><div class="wstep-num">3</div><div class="wstep-text" id="s1-card3" data-sie="<strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind." data-du="<strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für dich relevant sind." data-ihr="<strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Euch relevant sind."><strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind.</div></div>
+        <div class="wstep wstep-inactive"><div class="wstep-num">4</div><div class="wstep-text"><strong>Analyse</strong> – Auf Basis Ihrer Unterlagen erstellen wir eine strukturierte Auswertung und entscheiden gemeinsam, ob eine Zusammenarbeit sinnvoll ist.</div></div>
+        <div class="wstep wstep-inactive"><div class="wstep-num">5</div><div class="wstep-text"><strong>Umsetzungsgespräch</strong> – Im zweiten Termin legen wir gemeinsam fest, welche Themen wir umsetzen.</div></div>
       </div>
     </div>
 
@@ -616,6 +635,10 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="steckbrief">
+          <div class="steckbrief-title">Steckbrief</div>
+          <p class="steckbrief-text" id="s2-steckbrief">Gelernter Sozialversicherungsfachangestellter und Krankenkassenbetriebswirt (AOK). Seit 2017 bei der Allianz – als Inhaber einer Firmenfachagentur mit dem Schwerpunkt Firmen und umfassende Privatkundenberatung. In der Freizeit: Mountainbike und Golf.</p>
         </div>
       </div>
     </div>
@@ -701,26 +724,14 @@
           <div class="slider-wrap">
             <div class="slider-labels"><span>Weniger wichtig</span><span>Sehr wichtig</span></div>
             <div class="slider-track">
-              <input id="q2" type="range" class="q-slider" min="1" max="10" value="7" step="1">
+              <input id="q2" type="range" class="q-slider" min="1" max="10" value="5" step="1">
             </div>
           </div>
         </div>
 
-        <!-- F3 -->
+        <!-- F3 – Preis/Leistung (war F4) -->
         <div class="card q-card">
           <div class="q-num">Frage 03</div>
-          <p class="q-text"
-             data-sie="Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?"
-             data-du="Welche Erfahrungen hast du bisher mit Versicherungen gemacht?"
-             data-ihr="Welche Erfahrungen habt Ihr bisher mit Versicherungen gemacht?">
-            Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?
-          </p>
-          <textarea id="q3" class="q-textarea" rows="2" placeholder="Positiv, negativ – alles hilft …"></textarea>
-        </div>
-
-        <!-- F4 – Slider mit Mittellinie -->
-        <div class="card q-card">
-          <div class="q-num">Frage 04</div>
           <p class="q-text"
              data-sie="Worauf legen Sie mehr Wert?"
              data-du="Worauf legst du mehr Wert?"
@@ -736,9 +747,9 @@
           </div>
         </div>
 
-        <!-- F5 -->
+        <!-- F4 – Beratungstiefe (war F5) -->
         <div class="card q-card">
-          <div class="q-num">Frage 05</div>
+          <div class="q-num">Frage 04</div>
           <p class="q-text"
              data-sie="Wie tief möchten Sie in fachliche Details einsteigen?"
              data-du="Wie tief möchtest du in fachliche Details einsteigen?"
@@ -746,11 +757,23 @@
             Wie tief möchten Sie in fachliche Details einsteigen?
           </p>
           <div class="slider-wrap">
-            <div class="slider-labels"><span>Alltagstaugliche Lösung</span><span>Jedes Detail</span></div>
+            <div class="slider-labels"><span>Jedes Detail</span><span>Alltagstaugliche Lösung</span></div>
             <div class="slider-track">
               <input id="q5" type="range" class="q-slider" min="1" max="10" value="5" step="1">
             </div>
           </div>
+        </div>
+
+        <!-- F5 – Erfahrungen (war F3) -->
+        <div class="card q-card full">
+          <div class="q-num">Frage 05</div>
+          <p class="q-text"
+             data-sie="Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?"
+             data-du="Welche Erfahrungen hast du bisher mit Versicherungen gemacht?"
+             data-ihr="Welche Erfahrungen habt Ihr bisher mit Versicherungen gemacht?">
+            Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?
+          </p>
+          <textarea id="q3" class="q-textarea" rows="2" placeholder="Positiv, negativ – alles hilft …"></textarea>
         </div>
 
         <!-- F6 -->
@@ -820,40 +843,45 @@
         </div>
       </div>
 
-      <div class="steps-row">
+      <div class="steps-row" style="grid-template-columns: repeat(5,1fr);">
         <div class="card step-block">
           <div class="step-num">1</div>
-          <h3>Lebenssituation</h3>
-          <p id="s5-step1"
-             data-sie="Wir schauen gemeinsam, wo Sie heute stehen – privat, beruflich und finanziell."
-             data-du="Wir schauen gemeinsam, wo du heute stehst – privat, beruflich und finanziell."
-             data-ihr="Wir schauen gemeinsam, wo Ihr heute steht – privat, beruflich und finanziell.">
-            Wir schauen gemeinsam, wo Sie heute stehen – privat, beruflich und finanziell.
-          </p>
+          <h3>Kennenlernen</h3>
+          <p>Wir stellen uns und unser Team kurz vor.</p>
         </div>
         <div class="card step-block">
           <div class="step-num">2</div>
-          <h3>Daten erfassen</h3>
+          <h3>Erwartungen</h3>
           <p id="s5-step2"
-             data-sie="Wir halten Ihre Situation, Ziele und Wünsche strukturiert fest."
-             data-du="Wir halten deine Situation, Ziele und Wünsche strukturiert fest."
-             data-ihr="Wir halten Eure Situation, Ziele und Wünsche strukturiert fest.">
-            Wir halten Ihre Situation, Ziele und Wünsche strukturiert fest.
+             data-sie="Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz."
+             data-du="Was für eine Zusammenarbeit für dich wichtig ist, besprechen wir kurz."
+             data-ihr="Was für eine Zusammenarbeit für Euch wichtig ist, besprechen wir kurz.">
+            Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz.
           </p>
         </div>
         <div class="card step-block">
           <div class="step-num">3</div>
-          <h3>Auswertung</h3>
-          <p>Auf Basis der erfassten Daten werden passende Lösungen ermittelt und bewertet.</p>
+          <h3>Felder ermitteln</h3>
+          <p id="s5-step3"
+             data-sie="Gemeinsam schauen wir, welche Themen für Sie relevant sind."
+             data-du="Gemeinsam schauen wir, welche Themen für dich relevant sind."
+             data-ihr="Gemeinsam schauen wir, welche Themen für Euch relevant sind.">
+            Gemeinsam schauen wir, welche Themen für Sie relevant sind.
+          </p>
         </div>
-        <div class="card step-block">
-          <div class="step-num">4</div>
-          <h3>Umsetzungsgespräch</h3>
-          <p id="s5-step4"
-             data-sie="Gemeinsam entscheiden Sie, ob und was umgesetzt wird."
-             data-du="Gemeinsam entscheidest du, ob und was umgesetzt wird."
-             data-ihr="Gemeinsam entscheidet Ihr, ob und was umgesetzt wird.">
-            Gemeinsam entscheiden Sie, ob und was umgesetzt wird.
+        <div class="card step-block" style="opacity:0.6;">
+          <div class="step-num" style="background:var(--border);color:var(--muted);">4</div>
+          <h3 style="color:var(--muted);">Analyse</h3>
+          <p>Auf Basis Ihrer Unterlagen erstellen wir eine strukturierte Auswertung.</p>
+        </div>
+        <div class="card step-block" style="opacity:0.6;">
+          <div class="step-num" style="background:var(--border);color:var(--muted);">5</div>
+          <h3 style="color:var(--muted);">Umsetzungsgespräch</h3>
+          <p id="s5-step5"
+             data-sie="Im zweiten Termin legen Sie fest, welche Themen umgesetzt werden."
+             data-du="Im zweiten Termin legst du fest, welche Themen umgesetzt werden."
+             data-ihr="Im zweiten Termin legt Ihr fest, welche Themen umgesetzt werden.">
+            Im zweiten Termin legen Sie fest, welche Themen umgesetzt werden.
           </p>
         </div>
       </div>
@@ -899,7 +927,8 @@
       phone: '07524 91122',
       initials: 'AG',
       photo: 'adrian-portrait.jpg',
-      color: '#003781'
+      color: '#003781',
+      steckbrief: 'Gelernter Sozialversicherungsfachangestellter und Krankenkassenbetriebswirt (AOK). Seit 2017 bei der Allianz – Inhaber einer Firmenfachagentur mit dem Schwerpunkt Firmen und umfassende Privatkundenberatung. In der Freizeit: Mountainbike und Golf.'
     },
     {
       id: 'diana',
@@ -911,7 +940,8 @@
       phone: '07524 91122',
       initials: 'DB',
       photo: 'diana-portrait.jpg',
-      color: '#0057A8'
+      color: '#0057A8',
+      steckbrief: 'Steckbrief folgt.'
     },
     {
       id: 'claudia',
@@ -923,7 +953,8 @@
       phone: '07524 91122',
       initials: 'CS',
       photo: 'claudia-portrait.jpg',
-      color: '#0066CC'
+      color: '#0066CC',
+      steckbrief: 'Steckbrief folgt.'
     }
   ];
 
@@ -1036,11 +1067,12 @@
     document.getElementById('s1-title').textContent = s1titles[a];
 
     // S2 Berater-Daten
-    document.getElementById('s2-name').textContent  = person.name;
-    document.getElementById('s2-role').textContent  = person.role;
-    document.getElementById('s2-bio').textContent   = person.bio;
-    document.getElementById('s2-email').textContent = person.email;
-    document.getElementById('s2-phone').textContent = person.phone;
+    document.getElementById('s2-name').textContent       = person.name;
+    document.getElementById('s2-role').textContent       = person.role;
+    document.getElementById('s2-bio').textContent        = person.bio;
+    document.getElementById('s2-email').textContent      = person.email;
+    document.getElementById('s2-phone').textContent      = person.phone;
+    document.getElementById('s2-steckbrief').textContent = person.steckbrief || '';
     document.getElementById('s2-initials').textContent = person.initials;
     const s2photo = document.getElementById('s2-photo');
     s2photo.src = person.photo;
