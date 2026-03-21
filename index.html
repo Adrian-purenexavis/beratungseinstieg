@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beratungseinstieg – Allianz Gretzinger</title>
+  <style>
+    :root {
+      --blue:        #003781;
+      --blue-mid:    #0057A8;
+      --blue-btn:    #0066CC;
+      --blue-light:  #E8EFF8;
+      --orange:      #FF6200;
+      --bg:          #F2F4F6;
+      --bg-card:     #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #5A6472;
+      --label:       #8C96A2;
+      --border:      #D8DCE0;
+      --border-lt:   #EAEEF2;
+      --radius:      4px;
+      --radius-md:   6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── SETUP OVERLAY ───────────────────────────────────────── */
+    #setup-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,20,50,0.55);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    .setup-modal {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.22);
+      width: 580px; overflow: hidden;
+    }
+    .setup-modal-header {
+      background: var(--blue);
+      padding: 20px 28px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .logo-circle {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900; color: var(--blue);
+    }
+    .setup-modal-header h2 { font-size: 16px; font-weight: 600; color: #fff; }
+    .setup-modal-header p  { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+    .setup-body { padding: 24px 28px 0; }
+    .setup-field { margin-bottom: 20px; }
+    .field-label {
+      display: block; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--label); margin-bottom: 6px;
+    }
+    .setup-input {
+      width: 100%; padding: 9px 12px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: 14px; color: var(--text); background: #fff;
+      outline: none; transition: border-color 150ms;
+    }
+    .setup-input:focus { border-color: var(--blue-mid); box-shadow: 0 0 0 2px rgba(0,87,168,.12); }
+
+    /* Ansprache 3 Tabs */
+    .tab-group {
+      display: flex;
+      border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+    }
+    .tab-opt { flex: 1; position: relative; }
+    .tab-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .tab-opt label {
+      display: flex; align-items: center; justify-content: center;
+      padding: 9px 12px; font-size: 13px; font-weight: 600;
+      color: var(--muted); background: #FAFBFC; cursor: pointer;
+      border-right: 1px solid var(--border); transition: all 150ms;
+    }
+    .tab-opt:last-child label { border-right: none; }
+    .tab-opt input:checked + label {
+      background: var(--blue); color: #fff;
+    }
+
+    /* Team-Auswahl Setup */
+    .team-sel-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+    }
+    .team-sel-card {
+      padding: 12px 8px; border: 1px solid var(--border);
+      border-radius: var(--radius); cursor: pointer; text-align: center;
+      background: #FAFBFC; transition: all 150ms; user-select: none;
+    }
+    .team-sel-card:hover { border-color: var(--blue-mid); }
+    .team-sel-card.selected { border-color: var(--blue); background: var(--blue-light); }
+    .team-sel-photo {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--blue); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 8px; font-size: 14px; font-weight: 700; color: #fff;
+    }
+    .team-sel-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .ts-name { font-size: 12px; font-weight: 700; color: var(--text); }
+    .ts-role { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    .setup-footer {
+      padding: 16px 28px 24px;
+      display: flex; justify-content: flex-end;
+      border-top: 1px solid var(--border-lt); margin-top: 20px;
+    }
+    .btn-modal-start {
+      padding: 10px 28px; background: var(--blue-btn); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; cursor: pointer; transition: background 150ms, opacity 150ms;
+    }
+    .btn-modal-start:hover:not(:disabled) { background: var(--blue); }
+    .btn-modal-start:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* ── APP SHELL ───────────────────────────────────────────── */
+    #app { display: flex; flex-direction: column; min-height: 100vh; }
+
+    .top-bar {
+      background: var(--bg-card); border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .top-bar-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 24px;
+      height: 52px; display: flex; align-items: center; gap: 14px;
+    }
+    .app-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .app-title { font-size: 14px; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .divider { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+
+    /* Step Nav */
+    .step-nav { display: flex; align-items: center; flex: 1; overflow: hidden; }
+    .step-nav-item {
+      display: flex; align-items: center; gap: 7px; padding: 0 2px;
+      cursor: default; flex-shrink: 0;
+    }
+    .step-nav-item + .step-nav-item::before {
+      content: ''; width: 18px; height: 1px; background: var(--border); flex-shrink: 0; margin-right: 2px;
+    }
+    .step-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border); background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: var(--label);
+      flex-shrink: 0; transition: all 200ms;
+    }
+    .step-nav-item.done .step-dot { background: var(--blue-light); border-color: var(--blue-mid); color: var(--blue); }
+    .step-nav-item.active .step-dot { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .step-label { font-size: 12px; color: var(--label); font-weight: 500; white-space: nowrap; }
+    .step-nav-item.active .step-label { color: var(--blue); font-weight: 700; }
+    .step-nav-item.done .step-label { color: var(--blue-mid); }
+
+    .top-right { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-shrink: 0; }
+    .top-name-badge {
+      font-size: 12px; color: var(--muted); padding: 4px 10px;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      background: #FAFBFC; white-space: nowrap;
+    }
+    .top-avatar {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--blue); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    .top-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+    /* ── PAGE ────────────────────────────────────────────────── */
+    .page-content { flex: 1; max-width: 1100px; width: 100%; margin: 0 auto; padding: 0 24px; }
+
+    .page-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; padding: 26px 0 18px; gap: 24px;
+    }
+    .page-header-text { flex: 1; }
+    .ph-question { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+    .ph-title {
+      font-size: 26px; font-weight: 700; color: var(--text);
+      letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .ph-illus { width: 130px; height: 86px; flex-shrink: 0; }
+    .ph-illus svg { width: 100%; height: 100%; }
+
+    .screen { display: none; flex: 1; padding-bottom: 80px; }
+    .screen.active { display: block; animation: fadeIn 220ms ease; }
+    #screen-1.active { display: flex; flex-direction: column; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border-lt);
+      border-radius: var(--radius-md); box-shadow: 0 1px 3px rgba(0,0,0,.07);
+    }
+
+    /* ── SCREEN 1 ────────────────────────────────────────────── */
+    .welcome-block {
+      background: var(--bg-card); border: 1px solid var(--border-lt);
+      border-radius: var(--radius-md); padding: 34px 42px; margin-bottom: 14px;
+    }
+    .welcome-greeting {
+      font-size: 32px; font-weight: 700; color: var(--blue);
+      letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 10px;
+    }
+    .welcome-sub {
+      font-size: 15px; color: var(--muted); line-height: 1.65; max-width: 540px;
+    }
+    .welcome-chips { display: flex; gap: 10px; margin-top: 22px; }
+    .chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 14px; background: var(--blue-light);
+      border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--blue);
+    }
+    .chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+
+    .welcome-info-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .wic { background: var(--bg-card); border: 1px solid var(--border-lt); border-radius: var(--radius-md); padding: 18px 20px; }
+    .wic-num { font-size: 22px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+    .wic-label { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .wic-desc { font-size: 12px; color: var(--muted); }
+
+    /* ── SCREEN 2 ────────────────────────────────────────────── */
+    .contact-layout { display: grid; grid-template-columns: 1fr; gap: 14px; }
+    .contact-card { padding: 26px 30px; }
+    .contact-profile-row {
+      display: flex; align-items: flex-start; gap: 20px;
+      margin-bottom: 0; padding-bottom: 0;
+    }
+    .avatar-xl {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--blue); overflow: hidden; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: #fff;
+    }
+    .avatar-xl img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .contact-name { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .role-pill {
+      display: inline-block; padding: 2px 10px;
+      background: var(--blue-light); color: var(--blue);
+      border-radius: 2px; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .contact-bio { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .contact-details { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+    .detail-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+    .detail-icon {
+      width: 26px; height: 26px; border-radius: var(--radius);
+      background: var(--bg); border: 1px solid var(--border-lt);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .detail-icon svg {
+      width: 13px; height: 13px; fill: none;
+      stroke: var(--muted); stroke-width: 1.8;
+      stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    /* ── SCREEN 3 ────────────────────────────────────────────── */
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .team-card { padding: 24px 18px; text-align: center; }
+    .team-card.highlight { border-color: var(--blue); border-width: 2px; }
+    .avatar-md {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: var(--blue); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 14px; font-size: 18px; font-weight: 700; color: #fff;
+    }
+    .avatar-md img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .tm-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .tm-role {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--blue-mid); margin-bottom: 8px;
+    }
+    .tm-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+    .active-badge {
+      display: inline-block; margin-top: 12px; padding: 2px 10px;
+      background: var(--blue-light); color: var(--blue);
+      border-radius: 2px; font-size: 11px; font-weight: 700;
+    }
+
+    /* ── SCREEN 4 ────────────────────────────────────────────── */
+    .q-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .q-card { padding: 16px 18px; }
+    .q-card.full { grid-column: 1 / -1; }
+    .q-num {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--blue-mid); margin-bottom: 5px;
+    }
+    .q-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.45; margin-bottom: 10px; }
+    .q-textarea {
+      width: 100%; padding: 7px 10px; border: 1px solid var(--border);
+      border-radius: var(--radius); font-size: 13px; color: var(--text);
+      font-family: inherit; resize: vertical; min-height: 56px;
+      background: #FAFBFC; outline: none; transition: border-color 150ms;
+    }
+    .q-textarea:focus { border-color: var(--blue-mid); background: #fff; }
+
+    /* Slider */
+    .slider-wrap { display: flex; flex-direction: column; gap: 7px; }
+    .slider-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--label); }
+    .slider-track { position: relative; padding: 8px 0; }
+    .q-slider {
+      width: 100%; appearance: none; height: 4px;
+      border-radius: 2px; background: var(--border); outline: none; cursor: pointer;
+    }
+    .q-slider::-webkit-slider-thumb {
+      appearance: none; width: 18px; height: 18px; border-radius: 50%;
+      background: var(--blue); cursor: pointer; border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,55,129,.3);
+    }
+    /* Mittellinie für Slider */
+    .slider-center-mark {
+      position: absolute; left: 50%; top: 0;
+      transform: translateX(-50%);
+      width: 2px; height: 100%; background: var(--border);
+      pointer-events: none;
+    }
+
+    /* Toggle Buttons */
+    .toggle-row { display: flex; gap: 6px; }
+    .toggle-btn {
+      flex: 1; padding: 7px 8px; border: 1px solid var(--border);
+      border-radius: var(--radius); background: #FAFBFC;
+      font-size: 12px; font-weight: 500; color: var(--muted);
+      cursor: pointer; text-align: center; transition: all 150ms; user-select: none;
+    }
+    .toggle-btn:hover { border-color: var(--blue-mid); }
+    .toggle-btn.active {
+      background: var(--blue-light); border-color: var(--blue);
+      color: var(--blue); font-weight: 700;
+    }
+
+    /* Checkbox Pills */
+    .pill-group { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pill {
+      padding: 5px 14px; border: 1px solid var(--border); border-radius: 20px;
+      font-size: 12px; color: var(--muted); cursor: pointer;
+      transition: all 150ms; user-select: none;
+    }
+    .pill:hover { border-color: var(--blue-mid); }
+    .pill.checked {
+      background: var(--blue-light); border-color: var(--blue);
+      color: var(--blue); font-weight: 600;
+    }
+
+    /* Radio List */
+    .radio-list { display: flex; flex-direction: column; gap: 6px; }
+    .radio-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: var(--radius); cursor: pointer; font-size: 13px;
+      color: var(--muted); transition: all 150ms; user-select: none;
+    }
+    .radio-item:hover { border-color: var(--blue-mid); }
+    .radio-item.selected {
+      background: var(--blue-light); border-color: var(--blue); color: var(--blue);
+    }
+    .r-dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid var(--border); flex-shrink: 0; transition: all 150ms;
+    }
+    .radio-item.selected .r-dot { background: var(--blue); border-color: var(--blue); }
+
+    /* ── SCREEN 5 ────────────────────────────────────────────── */
+    .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+    .step-block { padding: 20px 16px; }
+    .step-num {
+      width: 30px; height: 30px; border-radius: 50%;
+      background: var(--blue); color: #fff;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
+    }
+    .step-block h3 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+    .step-block p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+    /* ── ABSCHLUSS-BANNER (Screen 5 unten) ──────────────────── */
+    .closing-banner {
+      margin-top: 16px;
+      background: var(--blue);
+      border-radius: var(--radius-md);
+      padding: 22px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    }
+    .closing-banner-text { flex: 1; }
+    .closing-banner-text h3 {
+      font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px;
+    }
+    .closing-banner-text p {
+      font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.55;
+    }
+    .btn-pdf {
+      flex-shrink: 0;
+      padding: 10px 22px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: var(--radius);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 150ms;
+      white-space: nowrap;
+    }
+    .btn-pdf:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── FOOTER NAV ──────────────────────────────────────────── */
+    .footer-nav {
+      position: sticky; bottom: 0;
+      background: var(--bg-card); border-top: 1px solid var(--border); z-index: 50;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto; padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-info { font-size: 12px; color: var(--label); }
+    .footer-btns { display: flex; gap: 8px; }
+    .btn-back {
+      padding: 8px 20px; background: transparent;
+      border: 1px solid var(--border); border-radius: var(--radius);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.05em;
+      text-transform: uppercase; color: var(--muted); cursor: pointer; transition: all 150ms;
+    }
+    .btn-back:hover { border-color: var(--muted); color: var(--text); }
+    .btn-next {
+      padding: 8px 24px; background: var(--blue-btn); border: none;
+      border-radius: var(--radius); font-size: 11px; font-weight: 700;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      color: #fff; cursor: pointer; transition: background 150ms;
+    }
+    .btn-next:hover { background: var(--blue); }
+  </style>
+</head>
+<body>
+
+<!-- ── SETUP MODAL ──────────────────────────────────────── -->
+<div id="setup-overlay">
+  <div class="setup-modal">
+    <div class="setup-modal-header">
+      <div class="logo-circle">A</div>
+      <div>
+        <h2>Beratungseinstieg</h2>
+        <p>Allianz Agentur Gretzinger · Sitzung einrichten</p>
+      </div>
+    </div>
+
+    <div class="setup-body">
+      <div class="setup-field">
+        <label class="field-label" for="customer-name">Name des Kunden</label>
+        <input type="text" id="customer-name" class="setup-input"
+               placeholder="z. B. Max Muster · Familie Müller · Herr und Frau Huber" autocomplete="off">
+      </div>
+
+      <div class="setup-field">
+        <label class="field-label">Ansprache</label>
+        <div class="tab-group">
+          <div class="tab-opt">
+            <input type="radio" name="ansprache" id="ansprache-sie" value="sie" checked>
+            <label for="ansprache-sie">Sie</label>
+          </div>
+          <div class="tab-opt">
+            <input type="radio" name="ansprache" id="ansprache-du" value="du">
+            <label for="ansprache-du">Du</label>
+          </div>
+          <div class="tab-opt">
+            <input type="radio" name="ansprache" id="ansprache-ihr" value="ihr">
+            <label for="ansprache-ihr">Ihr</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="setup-field">
+        <label class="field-label">Gesprächsführung</label>
+        <div class="team-sel-grid" id="team-sel-grid"></div>
+      </div>
+    </div>
+
+    <div class="setup-footer">
+      <button class="btn-modal-start" id="btn-start" disabled onclick="startPresentation()">
+        Beratung starten
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── APP SHELL ────────────────────────────────────────── -->
+<div id="app" style="display:none;">
+
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div class="app-logo">
+        <div class="logo-circle">A</div>
+        <span class="app-title">Beratungseinstieg</span>
+      </div>
+      <div class="divider"></div>
+      <nav class="step-nav" id="step-nav"></nav>
+      <div class="top-right">
+        <div class="top-name-badge" id="top-name">Kunde</div>
+        <div class="top-avatar" id="top-avatar">AG</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- ── Screen 1: Willkommen ── -->
+    <div class="screen" id="screen-1">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question">Herzlich willkommen</p>
+          <h1 class="ph-title" id="s1-title">Schön, dass Sie da sind.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="72" ry="7" fill="#E8EFF8"/>
+            <circle cx="62" cy="44" r="17" fill="#ADC4E0"/>
+            <rect x="44" y="66" width="36" height="44" rx="8" fill="#0057A8"/>
+            <circle cx="138" cy="44" r="17" fill="#C2D5EC"/>
+            <rect x="120" y="66" width="36" height="44" rx="8" fill="#003781"/>
+            <path d="M80 86 Q100 76 120 86" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <circle cx="32" cy="22" r="4" fill="#FF6200" opacity="0.65"/>
+            <circle cx="168" cy="26" r="3" fill="#FF6200" opacity="0.45"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="welcome-block">
+        <div class="welcome-greeting" id="s1-greeting">Herzlich willkommen.</div>
+        <p class="welcome-sub" id="s1-sub"
+           data-sie="Schön, dass Sie heute hier sind. Wir möchten Sie kennenlernen – und verstehen, was Ihnen wirklich wichtig ist."
+           data-du="Schön, dass du heute hier bist. Wir möchten dich kennenlernen – und verstehen, was dir wirklich wichtig ist."
+           data-ihr="Schön, dass Ihr heute hier seid. Wir möchten Euch kennenlernen – und verstehen, was Euch wirklich wichtig ist.">
+          Schön, dass Sie heute hier sind. Wir möchten Sie kennenlernen – und verstehen, was Ihnen wirklich wichtig ist.
+        </p>
+        <div class="welcome-chips">
+          <div class="chip"><div class="chip-dot"></div>Kein Formular</div>
+          <div class="chip"><div class="chip-dot"></div>Persönliches Gespräch</div>
+          <div class="chip"><div class="chip-dot"></div>ca. 5 Minuten</div>
+        </div>
+      </div>
+
+      <div class="welcome-info-row">
+        <div class="wic">
+          <div class="wic-num">1.</div>
+          <div class="wic-label">Kennenlernen</div>
+          <div class="wic-desc">Wir stellen uns und unser Team kurz vor.</div>
+        </div>
+        <div class="wic">
+          <div class="wic-num">2.</div>
+          <div class="wic-label">Erwartungen</div>
+          <div class="wic-desc" id="s1-card2"
+               data-sie="Was Ihnen in der Beratung wichtig ist, besprechen wir kurz."
+               data-du="Was dir in der Beratung wichtig ist, besprechen wir kurz."
+               data-ihr="Was Euch in der Beratung wichtig ist, besprechen wir kurz.">
+            Was Ihnen in der Beratung wichtig ist, besprechen wir kurz.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Screen 2: Ansprechpartner ── -->
+    <div class="screen" id="screen-2">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question" id="s2-label"
+             data-sie="Wer begleitet Sie heute?"
+             data-du="Wer begleitet dich heute?"
+             data-ihr="Wer begleitet Euch heute?">Wer begleitet Sie heute?</p>
+          <h1 class="ph-title">Ihr Ansprechpartner</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="58" ry="7" fill="#E8EFF8"/>
+            <circle cx="100" cy="48" r="26" fill="#ADC4E0"/>
+            <rect x="66" y="78" width="68" height="38" rx="9" fill="#003781"/>
+            <circle cx="134" cy="28" r="6" fill="#FF6200" opacity="0.55"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="card contact-card">
+        <div class="contact-profile-row">
+          <div class="avatar-xl" id="s2-avatar">
+            <img id="s2-photo" src="" alt="" style="display:none;">
+            <span id="s2-initials">AG</span>
+          </div>
+          <div style="flex:1;">
+            <div class="contact-name" id="s2-name">Adrian Gretzinger</div>
+            <div class="role-pill" id="s2-role">Agenturinhaber</div>
+            <p class="contact-bio" id="s2-bio">Firmen- und Privatkundenberater. Direkter Ansprechpartner für Versicherung und Vorsorge.</p>
+            <div class="contact-details">
+              <div class="detail-row">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+                </div>
+                <span id="s2-email">adrian.gretzinger@allianz.de</span>
+              </div>
+              <div class="detail-row">
+                <div class="detail-icon">
+                  <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6.23 6.23l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </div>
+                <span id="s2-phone">07524 91122</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Screen 3: Team ── -->
+    <div class="screen" id="screen-3">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question" id="s3-label"
+             data-sie="Das Team hinter Ihrer Beratung"
+             data-du="Das Team hinter deiner Beratung"
+             data-ihr="Das Team hinter Eurer Beratung">Das Team hinter Ihrer Beratung</p>
+          <h1 class="ph-title" id="s3-title"
+              data-sie="Wer sich um Sie kümmert."
+              data-du="Wer sich um dich kümmert."
+              data-ihr="Wer sich um Euch kümmert.">Wer sich um Sie kümmert.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="72" ry="7" fill="#E8EFF8"/>
+            <circle cx="68" cy="46" r="15" fill="#ADC4E0"/>
+            <rect x="52" y="66" width="32" height="36" rx="6" fill="#0057A8"/>
+            <circle cx="132" cy="46" r="15" fill="#C2D5EC"/>
+            <rect x="116" y="66" width="32" height="36" rx="6" fill="#003781"/>
+            <circle cx="100" cy="40" r="17" fill="#8BAED4"/>
+            <rect x="82" y="62" width="36" height="40" rx="7" fill="#0066CC"/>
+          </svg>
+        </div>
+      </div>
+      <div class="team-grid" id="team-grid"></div>
+    </div>
+
+    <!-- ── Screen 4: Erwartungen ── -->
+    <div class="screen" id="screen-4">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question" id="s4-label"
+             data-sie="Was Ihnen wichtig ist"
+             data-du="Was dir wichtig ist"
+             data-ihr="Was Euch wichtig ist">Was Ihnen wichtig ist</p>
+          <h1 class="ph-title" id="s4-title"
+              data-sie="Ihre Erwartungen."
+              data-du="Deine Erwartungen."
+              data-ihr="Eure Erwartungen.">Ihre Erwartungen.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="120" rx="65" ry="7" fill="#E8EFF8"/>
+            <rect x="52" y="28" width="96" height="72" rx="8" fill="#fff" stroke="#D8DCE0" stroke-width="1.5"/>
+            <line x1="68" y1="50" x2="132" y2="50" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
+            <line x1="68" y1="63" x2="118" y2="63" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
+            <line x1="68" y1="76" x2="108" y2="76" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="143" cy="40" r="3" fill="#0057A8"/>
+            <circle cx="143" cy="53" r="3" fill="#D8DCE0"/>
+            <circle cx="143" cy="66" r="3" fill="#D8DCE0"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="q-grid">
+
+        <!-- F1 -->
+        <div class="card q-card full">
+          <div class="q-num">Frage 01</div>
+          <p class="q-text"
+             data-sie="Was zeichnet aus Ihrer Sicht einen sehr guten Berater aus?"
+             data-du="Was zeichnet aus deiner Sicht einen sehr guten Berater aus?"
+             data-ihr="Was zeichnet aus Eurer Sicht einen sehr guten Berater aus?">
+            Was zeichnet aus Ihrer Sicht einen sehr guten Berater aus?
+          </p>
+          <textarea id="q1" class="q-textarea" rows="2" placeholder="Gedanken, Erfahrungen …"></textarea>
+        </div>
+
+        <!-- F2 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 02</div>
+          <p class="q-text"
+             data-sie="Wie wichtig ist Ihnen ein persönlicher Ansprechpartner?"
+             data-du="Wie wichtig ist dir ein persönlicher Ansprechpartner?"
+             data-ihr="Wie wichtig ist Euch ein persönlicher Ansprechpartner?">
+            Wie wichtig ist Ihnen ein persönlicher Ansprechpartner?
+          </p>
+          <div class="slider-wrap">
+            <div class="slider-labels"><span>Weniger wichtig</span><span>Sehr wichtig</span></div>
+            <div class="slider-track">
+              <input id="q2" type="range" class="q-slider" min="1" max="10" value="7" step="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- F3 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 03</div>
+          <p class="q-text"
+             data-sie="Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?"
+             data-du="Welche Erfahrungen hast du bisher mit Versicherungen gemacht?"
+             data-ihr="Welche Erfahrungen habt Ihr bisher mit Versicherungen gemacht?">
+            Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?
+          </p>
+          <textarea id="q3" class="q-textarea" rows="2" placeholder="Positiv, negativ – alles hilft …"></textarea>
+        </div>
+
+        <!-- F4 – Slider mit Mittellinie -->
+        <div class="card q-card">
+          <div class="q-num">Frage 04</div>
+          <p class="q-text"
+             data-sie="Worauf legen Sie mehr Wert?"
+             data-du="Worauf legst du mehr Wert?"
+             data-ihr="Worauf legt Ihr mehr Wert?">
+            Worauf legen Sie mehr Wert?
+          </p>
+          <div class="slider-wrap">
+            <div class="slider-labels"><span>Preis</span><span>Leistung</span></div>
+            <div class="slider-track">
+              <input id="q4" type="range" class="q-slider" min="1" max="11" value="6" step="1">
+              <div class="slider-center-mark"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F5 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 05</div>
+          <p class="q-text"
+             data-sie="Wie tief möchten Sie in fachliche Details einsteigen?"
+             data-du="Wie tief möchtest du in fachliche Details einsteigen?"
+             data-ihr="Wie tief möchtet Ihr in fachliche Details einsteigen?">
+            Wie tief möchten Sie in fachliche Details einsteigen?
+          </p>
+          <div class="slider-wrap">
+            <div class="slider-labels"><span>Alltagstaugliche Lösung</span><span>Jedes Detail</span></div>
+            <div class="slider-track">
+              <input id="q5" type="range" class="q-slider" min="1" max="10" value="5" step="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- F6 -->
+        <div class="card q-card">
+          <div class="q-num">Frage 06</div>
+          <p class="q-text"
+             data-sie="Was ist für Sie der beste Kommunikationsweg?"
+             data-du="Was ist für dich der beste Kommunikationsweg?"
+             data-ihr="Was ist für Euch der beste Kommunikationsweg?">
+            Was ist für Sie der beste Kommunikationsweg?
+          </p>
+          <div class="pill-group" id="q6">
+            <div class="pill" onclick="this.classList.toggle('checked')">Telefon</div>
+            <div class="pill" onclick="this.classList.toggle('checked')">E-Mail</div>
+            <div class="pill" onclick="this.classList.toggle('checked')">WhatsApp</div>
+            <div class="pill" onclick="this.classList.toggle('checked')">Post</div>
+          </div>
+        </div>
+
+        <!-- F7 -->
+        <div class="card q-card full">
+          <div class="q-num">Frage 07</div>
+          <p class="q-text"
+             data-sie="Wie oft sollen wir uns über diese Themen austauschen?"
+             data-du="Wie oft sollen wir uns über diese Themen austauschen?"
+             data-ihr="Wie oft sollen wir uns über diese Themen austauschen?">
+            Wie oft sollen wir uns über diese Themen austauschen?
+          </p>
+          <div class="radio-list" id="q7">
+            <div class="radio-item" onclick="selectRadio(this)">
+              <span class="r-dot"></span> 1× jährlich
+            </div>
+            <div class="radio-item" onclick="selectRadio(this)">
+              <span class="r-dot"></span> Alle 2 Jahre
+            </div>
+            <div class="radio-item" onclick="selectRadio(this)">
+              <span class="r-dot"></span> Nach Bedarf – kein fixer Rhythmus
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Screen 5: Vorgehen ── -->
+    <div class="screen" id="screen-5">
+      <div class="page-header">
+        <div class="page-header-text">
+          <p class="ph-question">So läuft unser Gespräch heute ab</p>
+          <h1 class="ph-title">Unser Vorgehen.</h1>
+        </div>
+        <div class="ph-illus">
+          <svg viewBox="0 0 200 130" fill="none">
+            <ellipse cx="100" cy="118" rx="65" ry="7" fill="#E8EFF8"/>
+            <circle cx="28" cy="65" r="12" fill="#0057A8"/>
+            <text x="28" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">1</text>
+            <line x1="40" y1="65" x2="66" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
+            <circle cx="78" cy="65" r="12" fill="#003781"/>
+            <text x="78" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">2</text>
+            <line x1="90" y1="65" x2="116" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
+            <circle cx="128" cy="65" r="12" fill="#0066CC"/>
+            <text x="128" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">3</text>
+            <line x1="140" y1="65" x2="162" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
+            <circle cx="174" cy="65" r="12" fill="#FF6200" opacity="0.85"/>
+            <text x="174" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">4</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="steps-row">
+        <div class="card step-block">
+          <div class="step-num">1</div>
+          <h3>Lebenssituation</h3>
+          <p id="s5-step1"
+             data-sie="Wir schauen gemeinsam, wo Sie heute stehen – privat, beruflich und finanziell."
+             data-du="Wir schauen gemeinsam, wo du heute stehst – privat, beruflich und finanziell."
+             data-ihr="Wir schauen gemeinsam, wo Ihr heute steht – privat, beruflich und finanziell.">
+            Wir schauen gemeinsam, wo Sie heute stehen – privat, beruflich und finanziell.
+          </p>
+        </div>
+        <div class="card step-block">
+          <div class="step-num">2</div>
+          <h3>Daten erfassen</h3>
+          <p id="s5-step2"
+             data-sie="Wir halten Ihre Situation, Ziele und Wünsche strukturiert fest."
+             data-du="Wir halten deine Situation, Ziele und Wünsche strukturiert fest."
+             data-ihr="Wir halten Eure Situation, Ziele und Wünsche strukturiert fest.">
+            Wir halten Ihre Situation, Ziele und Wünsche strukturiert fest.
+          </p>
+        </div>
+        <div class="card step-block">
+          <div class="step-num">3</div>
+          <h3>Auswertung</h3>
+          <p>Auf Basis der erfassten Daten werden passende Lösungen ermittelt und bewertet.</p>
+        </div>
+        <div class="card step-block">
+          <div class="step-num">4</div>
+          <h3>Umsetzungsgespräch</h3>
+          <p id="s5-step4"
+             data-sie="Gemeinsam entscheiden Sie, ob und was umgesetzt wird."
+             data-du="Gemeinsam entscheidest du, ob und was umgesetzt wird."
+             data-ihr="Gemeinsam entscheidet Ihr, ob und was umgesetzt wird.">
+            Gemeinsam entscheiden Sie, ob und was umgesetzt wird.
+          </p>
+        </div>
+      </div>
+
+      <div class="closing-banner">
+        <div class="closing-banner-text">
+          <h3 id="s5-banner-title">Gibt es noch etwas, das Sie ansprechen möchten?</h3>
+          <p id="s5-banner-sub"
+             data-sie="Wenn alles passt, starten wir jetzt gemeinsam in Ihre Beratung."
+             data-du="Wenn alles passt, starten wir jetzt gemeinsam in deine Beratung."
+             data-ihr="Wenn alles passt, starten wir jetzt gemeinsam in Eure Beratung.">
+            Wenn alles passt, starten wir jetzt gemeinsam in Ihre Beratung.
+          </p>
+        </div>
+        <button class="btn-pdf" onclick="generatePDF()">↓ Zusammenfassung als PDF</button>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+  <div class="footer-nav">
+    <div class="footer-inner">
+      <span class="footer-info" id="footer-info">Schritt 1 von 6</span>
+      <div class="footer-btns">
+        <button class="btn-back" id="btn-back" style="display:none;" onclick="navigate(-1)">← Zurück</button>
+        <button class="btn-next" id="btn-next" onclick="navigate(1)">Weiter →</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── JAVASCRIPT ──────────────────────────────────────── -->
+<script>
+  const teamData = [
+    {
+      id: 'adrian',
+      name: 'Adrian Gretzinger',
+      role: 'Agenturinhaber',
+      bio: 'Firmen- und Privatkundenberater. Direkter Ansprechpartner für Versicherung und Vorsorge.',
+      desc: 'Firmen- & Privatkunden · Vorsorge · Strategie',
+      email: 'adrian.gretzinger@allianz.de',
+      phone: '07524 91122',
+      initials: 'AG',
+      photo: 'adrian-portrait.jpg',
+      color: '#003781'
+    },
+    {
+      id: 'diana',
+      name: 'Diana Bajramov',
+      role: 'Privatkundenberaterin',
+      bio: 'Privatkundenberaterin. Persönliche Beratung und Betreuung für alle Lebenslagen.',
+      desc: 'Privatkundenberatung · Persönliche Betreuung',
+      email: 'diana.bajramov@allianz.de',
+      phone: '07524 91122',
+      initials: 'DB',
+      photo: 'diana-portrait.jpg',
+      color: '#0057A8'
+    },
+    {
+      id: 'claudia',
+      name: 'Claudia Schmid',
+      role: 'Organisation',
+      bio: 'Interne Abläufe, Kundenanfragen, Vertragsservice und Betreuung.',
+      desc: 'Interne Abläufe · Kundenanfragen · Vertragsservice',
+      email: 'claudia.schmid1@allianz.de',
+      phone: '07524 91122',
+      initials: 'CS',
+      photo: 'claudia-portrait.jpg',
+      color: '#0066CC'
+    }
+  ];
+
+  const stepLabels = ['Willkommen', 'Kontakt', 'Team', 'Erwartungen', 'Ablauf'];
+
+  const state = { name: '', ansprache: 'sie', contactId: 'adrian', screen: 1, total: 5 };
+
+  /* ── Setup ── */
+  function renderTeamSel() {
+    const grid = document.getElementById('team-sel-grid');
+    grid.innerHTML = teamData.map(p => `
+      <div class="team-sel-card ${p.id === state.contactId ? 'selected' : ''}" onclick="pickContact('${p.id}')">
+        <div class="team-sel-photo" style="background:${p.color}">
+          <img src="${p.photo}" alt="${p.name}" onerror="this.style.display='none'">
+        </div>
+        <div class="ts-name">${p.name.split(' ')[0]}</div>
+        <div class="ts-role">${p.role}</div>
+      </div>
+    `).join('');
+  }
+
+  function pickContact(id) { state.contactId = id; renderTeamSel(); }
+
+  document.getElementById('customer-name').addEventListener('input', function() {
+    state.name = this.value.trim();
+    document.getElementById('btn-start').disabled = !state.name;
+  });
+
+  document.querySelectorAll('input[name="ansprache"]').forEach(r => {
+    r.addEventListener('change', function() { state.ansprache = this.value; });
+  });
+
+  /* ── Start ── */
+  function startPresentation() {
+    state.name       = document.getElementById('customer-name').value.trim();
+    state.ansprache  = document.querySelector('input[name="ansprache"]:checked').value;
+    document.getElementById('setup-overlay').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    buildStepNav();
+    renderTeamGrid();
+    showScreen(1);
+  }
+
+  function buildStepNav() {
+    document.getElementById('step-nav').innerHTML = stepLabels.map((l, i) => `
+      <div class="step-nav-item" id="snav-${i+1}">
+        <div class="step-dot" id="sdot-${i+1}">${i+1}</div>
+        <div class="step-label">${l}</div>
+      </div>
+    `).join('');
+  }
+
+  /* ── Navigation ── */
+  function navigate(dir) {
+    const n = state.screen + dir;
+    if (n < 1 || n > state.total) return;
+    showScreen(n);
+  }
+
+  function showScreen(n) {
+    for (let i = 1; i <= state.total; i++) {
+      const el = document.getElementById('screen-' + i);
+      el.style.display = 'none'; el.classList.remove('active');
+    }
+    const t = document.getElementById('screen-' + n);
+    t.style.display = 'block'; t.classList.add('active');
+    state.screen = n;
+    updateStepNav(n);
+    updateTexts();
+    updateFooter(n);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  function updateStepNav(n) {
+    for (let i = 1; i <= state.total; i++) {
+      const item = document.getElementById('snav-' + i);
+      const dot  = document.getElementById('sdot-' + i);
+      if (!item) continue;
+      item.classList.remove('active', 'done');
+      if (i < n)      { item.classList.add('done');   dot.innerHTML  = '✓'; }
+      else if (i === n){ item.classList.add('active'); dot.textContent = i; }
+      else             { dot.textContent = i; }
+    }
+    document.getElementById('footer-info').textContent = `Schritt ${n} von ${state.total}`;
+  }
+
+  function updateFooter(n) {
+    document.getElementById('btn-back').style.display = n > 1 ? 'inline-flex' : 'none';
+    document.getElementById('btn-next').style.display = n < state.total ? 'inline-flex' : 'none';
+  }
+
+  /* ── Texte Sie/Du/Ihr ── */
+  function updateTexts() {
+    const a      = state.ansprache; // 'sie' | 'du' | 'ihr'
+    const name   = state.name;
+    const person = teamData.find(p => p.id === state.contactId) || teamData[0];
+
+    // Alle data-Attribute
+    document.querySelectorAll('[data-sie]').forEach(el => {
+      if (el.dataset[a] !== undefined) el.innerHTML = el.dataset[a];
+    });
+
+    // S1 personalisiert
+    document.getElementById('s1-greeting').textContent = `Herzlich willkommen, ${name}.`;
+    const s1titles = {
+      sie: `Schön, dass Sie heute hier sind, ${name}.`,
+      du:  `Schön, dass du heute hier bist, ${name}.`,
+      ihr: `Schön, dass Ihr heute hier seid, ${name}.`
+    };
+    document.getElementById('s1-title').textContent = s1titles[a];
+
+    // S2 Berater-Daten
+    document.getElementById('s2-name').textContent  = person.name;
+    document.getElementById('s2-role').textContent  = person.role;
+    document.getElementById('s2-bio').textContent   = person.bio;
+    document.getElementById('s2-email').textContent = person.email;
+    document.getElementById('s2-phone').textContent = person.phone;
+    document.getElementById('s2-initials').textContent = person.initials;
+    const s2photo = document.getElementById('s2-photo');
+    s2photo.src = person.photo;
+    s2photo.style.display = 'block';
+    document.getElementById('s2-initials').style.display = 'none';
+
+    // S5 Banner Titel
+    const bannerTitles = {
+      sie: `Gibt es noch etwas, das Sie ansprechen möchten?`,
+      du:  `Gibt es noch etwas, das du ansprechen möchtest?`,
+      ihr: `Gibt es noch etwas, das Ihr ansprechen möchtet?`
+    };
+    const el = document.getElementById('s5-banner-title');
+    if (el) el.textContent = bannerTitles[a];
+
+    // Top Bar
+    document.getElementById('top-name').textContent = name;
+    const topAv = document.getElementById('top-avatar');
+    topAv.innerHTML = `<img src="${person.photo}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:50%;" onerror="this.style.display='none';this.parentElement.textContent='${person.initials}'">`;
+  }
+
+  /* ── Team Grid ── */
+  function renderTeamGrid() {
+    document.getElementById('team-grid').innerHTML = teamData.map(p => `
+      <div class="card team-card ${p.id === state.contactId ? 'highlight' : ''}">
+        <div class="avatar-md" style="background:${p.color}">
+          <img src="${p.photo}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.textContent='${p.initials}'">
+        </div>
+        <div class="tm-name">${p.name}</div>
+        <div class="tm-role">${p.role}</div>
+        <p class="tm-desc">${p.desc}</p>
+        ${p.id === state.contactId ? '<span class="active-badge">Heute für Sie da</span>' : ''}
+      </div>
+    `).join('');
+  }
+
+  /* ── Interaktion ── */
+  function selectRadio(el) {
+    el.closest('.radio-list').querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  /* ── PDF generieren ─────────────────────────────────────── */
+  function generatePDF() {
+    const person   = teamData.find(p => p.id === state.contactId) || teamData[0];
+    const now      = new Date();
+    const datum    = now.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    const uhrzeit  = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+    // Schieberegler-Werte in Text übersetzen
+    // Q2: Skala 1–10
+    const q2val = parseInt(document.getElementById('q2').value);
+    const q2pct = Math.round((q2val - 1) / 9 * 100);
+    const q2txt = q2val <= 2 ? 'Weniger wichtig' : q2val <= 4 ? 'Eher unwichtig' : q2val <= 6 ? 'Neutral' : q2val <= 8 ? 'Wichtig' : 'Sehr wichtig';
+
+    // Q4: Skala 1–11, Mitte bei 6
+    const q4val = parseInt(document.getElementById('q4').value);
+    const q4txt = q4val <= 2 ? 'Klar Preis' : q4val <= 4 ? 'Eher Preis' : q4val === 5 || q4val === 6 || q4val === 7 ? 'Ausgewogen' : q4val <= 9 ? 'Eher Leistung' : 'Klar Leistung';
+
+    // Q5: Skala 1–10
+    const q5val = parseInt(document.getElementById('q5').value);
+    const q5txt = q5val <= 2 ? 'Alltagstaugliche Lösung' : q5val <= 4 ? 'Eher pragmatisch' : q5val <= 6 ? 'Ausgewogen' : q5val <= 8 ? 'Eher detailliert' : 'Jedes Detail';
+
+    const q6checked = [...document.querySelectorAll('#q6 .pill.checked')].map(p => p.textContent).join(', ') || '–';
+    const q7sel     = document.querySelector('#q7 .radio-item.selected');
+    const q7txt     = q7sel ? q7sel.textContent.trim() : '–';
+
+    const q1txt = document.getElementById('q1').value.trim() || '–';
+    const q3txt = document.getElementById('q3').value.trim() || '–';
+
+    const anspracheLabel = { sie: 'Sie (formell)', du: 'Du (informell)', ihr: 'Ihr (Paar)' }[state.ansprache];
+
+    const html = `<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Beratungseinstieg – ${state.name} – ${datum}</title>
+<style>
+  @page { size: A4; margin: 20mm 18mm 20mm 18mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; font-size: 11pt; color: #1A1A1A; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 2px solid #003781; margin-bottom: 20px; }
+  .header-left h1 { font-size: 18pt; font-weight: 800; color: #003781; letter-spacing: -0.02em; }
+  .header-left p { font-size: 10pt; color: #5A6472; margin-top: 2px; }
+  .header-right { text-align: right; font-size: 10pt; color: #5A6472; line-height: 1.6; }
+  .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+  .meta-box { background: #F2F4F6; border-radius: 4px; padding: 10px 14px; }
+  .meta-box .label { font-size: 8.5pt; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #8C96A2; margin-bottom: 3px; }
+  .meta-box .value { font-size: 11pt; font-weight: 600; color: #1A1A1A; }
+  .section-title { font-size: 11pt; font-weight: 700; color: #003781; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #EAEEF2; }
+  .q-row { margin-bottom: 14px; }
+  .q-label { font-size: 8.5pt; font-weight: 700; color: #8C96A2; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+  .q-question { font-size: 10pt; font-weight: 600; color: #1A1A1A; margin-bottom: 4px; }
+  .q-answer { font-size: 10.5pt; color: #1A1A1A; background: #F8FAFC; border-left: 3px solid #003781; padding: 6px 10px; border-radius: 2px; }
+  .q-answer.neutral { border-left-color: #D8DCE0; color: #5A6472; font-style: italic; }
+  .footer { margin-top: 28px; padding-top: 10px; border-top: 1px solid #EAEEF2; font-size: 9pt; color: #8C96A2; display: flex; justify-content: space-between; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Beratungseinstieg</h1>
+    <p>Allianz Agentur Gretzinger · Kundenpräferenzen</p>
+  </div>
+  <div class="header-right">
+    <strong>${datum}</strong><br>
+    ${uhrzeit} Uhr<br>
+    Erstellt von: ${person.name}
+  </div>
+</div>
+
+<div class="meta-grid">
+  <div class="meta-box">
+    <div class="label">Kunde / Kundin</div>
+    <div class="value">${state.name}</div>
+  </div>
+  <div class="meta-box">
+    <div class="label">Ansprache</div>
+    <div class="value">${anspracheLabel}</div>
+  </div>
+  <div class="meta-box">
+    <div class="label">Berater / Beraterin</div>
+    <div class="value">${person.name}</div>
+  </div>
+  <div class="meta-box">
+    <div class="label">Rolle</div>
+    <div class="value">${person.role}</div>
+  </div>
+</div>
+
+<div class="section-title">Kundenpräferenzen aus dem Erstgespräch</div>
+
+<div class="q-row">
+  <div class="q-label">Frage 01</div>
+  <div class="q-question">Was zeichnet einen sehr guten Berater aus?</div>
+  <div class="q-answer ${q1txt === '–' ? 'neutral' : ''}">${q1txt}</div>
+</div>
+
+<div class="q-row">
+  <div class="q-label">Frage 02</div>
+  <div class="q-question">Wichtigkeit eines persönlichen Ansprechpartners</div>
+  <div class="q-answer">${q2txt} (${q2val}/5)</div>
+</div>
+
+<div class="q-row">
+  <div class="q-label">Frage 03</div>
+  <div class="q-question">Bisherige Erfahrungen mit Versicherungen</div>
+  <div class="q-answer ${q3txt === '–' ? 'neutral' : ''}">${q3txt}</div>
+</div>
+
+<div class="q-row">
+  <div class="q-label">Frage 04</div>
+  <div class="q-question">Preis vs. Leistung</div>
+  <div class="q-answer">${q4txt}</div>
+</div>
+
+<div class="q-row">
+  <div class="q-label">Frage 05</div>
+  <div class="q-question">Gewünschte Beratungstiefe</div>
+  <div class="q-answer">${q5txt}</div>
+</div>
+
+<div class="q-row">
+  <div class="q-label">Frage 06</div>
+  <div class="q-question">Bevorzugter Kommunikationsweg</div>
+  <div class="q-answer">${q6checked}</div>
+</div>
+
+<div class="q-row">
+  <div class="q-label">Frage 07</div>
+  <div class="q-question">Gewünschte Kontakthäufigkeit</div>
+  <div class="q-answer">${q7txt}</div>
+</div>
+
+<div class="footer">
+  <span>Allianz Agentur Gretzinger · ${person.email} · ${person.phone}</span>
+  <span>Erstellt am ${datum} um ${uhrzeit} Uhr</span>
+</div>
+
+</body>
+</html>`;
+
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 400);
+  }
+
+  /* ── Init ── */
+  state.contactId = 'adrian';
+  renderTeamSel();
+</script>
+</body>
+</html>
