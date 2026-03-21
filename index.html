@@ -260,11 +260,25 @@
     }
     .steckbrief-title {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.08em; color: var(--label); margin-bottom: 8px;
+      letter-spacing: 0.08em; color: var(--label); margin-bottom: 12px;
     }
-    .steckbrief-text {
-      font-size: 13px; color: var(--muted); line-height: 1.65;
+    .steckbrief-grid {
+      display: grid; grid-template-columns: repeat(2,1fr); gap: 8px;
     }
+    .sb-tile {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: var(--bg); border: 1px solid var(--border-lt);
+      border-radius: var(--radius); padding: 10px 12px;
+    }
+    .sb-icon {
+      width: 28px; height: 28px; border-radius: var(--radius);
+      background: var(--blue-light); color: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sb-icon svg { width: 14px; height: 14px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+    .sb-label { font-size: 10px; font-weight: 700; color: var(--label); text-transform:uppercase; letter-spacing:.04em; margin-bottom:2px; }
+    .sb-value { font-size: 12px; color: var(--text); line-height:1.45; }
 
     /* ── SCREEN 2 ────────────────────────────────────────────── */
     .contact-layout { display: grid; grid-template-columns: 1fr; gap: 14px; }
@@ -554,7 +568,7 @@
     <div class="screen" id="screen-1">
       <div class="page-header">
         <div class="page-header-text">
-          <p class="ph-question">Herzlich willkommen</p>
+          <p class="ph-question">Herzlich <strong style="color:var(--blue);letter-spacing:0.04em;">WILLKOMMEN</strong></p>
           <h1 class="ph-title" id="s1-title">Schön, dass Sie da sind.</h1>
         </div>
         <div class="ph-illus">
@@ -584,7 +598,7 @@
       <div class="welcome-steps">
         <div class="wstep"><div class="wstep-num">1</div><div class="wstep-text"><strong>Kennenlernen</strong> – Wir stellen uns und unser Team kurz vor.</div></div>
         <div class="wstep"><div class="wstep-num">2</div><div class="wstep-text" id="s1-card2" data-sie="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz." data-du="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für dich wichtig ist, besprechen wir kurz." data-ihr="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Euch wichtig ist, besprechen wir kurz."><strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz.</div></div>
-        <div class="wstep"><div class="wstep-num">3</div><div class="wstep-text" id="s1-card3" data-sie="<strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind." data-du="<strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für dich relevant sind." data-ihr="<strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Euch relevant sind."><strong>Felder ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind.</div></div>
+        <div class="wstep"><div class="wstep-num">3</div><div class="wstep-text" id="s1-card3" data-sie="<strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind." data-du="<strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für dich relevant sind." data-ihr="<strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Euch relevant sind."><strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind.</div></div>
         <div class="wstep wstep-inactive"><div class="wstep-num">4</div><div class="wstep-text"><strong>Analyse</strong> – Auf Basis Ihrer Unterlagen erstellen wir eine strukturierte Auswertung und entscheiden gemeinsam, ob eine Zusammenarbeit sinnvoll ist.</div></div>
         <div class="wstep wstep-inactive"><div class="wstep-num">5</div><div class="wstep-text"><strong>Umsetzungsgespräch</strong> – Im zweiten Termin legen wir gemeinsam fest, welche Themen wir umsetzen.</div></div>
       </div>
@@ -636,9 +650,9 @@
             </div>
           </div>
         </div>
-        <div class="steckbrief">
+        <div class="steckbrief" id="s2-steckbrief-block">
           <div class="steckbrief-title">Steckbrief</div>
-          <p class="steckbrief-text" id="s2-steckbrief">Gelernter Sozialversicherungsfachangestellter und Krankenkassenbetriebswirt (AOK). Seit 2017 bei der Allianz – als Inhaber einer Firmenfachagentur mit dem Schwerpunkt Firmen und umfassende Privatkundenberatung. In der Freizeit: Mountainbike und Golf.</p>
+          <div class="steckbrief-grid" id="s2-steckbrief"></div>
         </div>
       </div>
     </div>
@@ -765,7 +779,7 @@
         </div>
 
         <!-- F5 – Erfahrungen (war F3) -->
-        <div class="card q-card full">
+        <div class="card q-card">
           <div class="q-num">Frage 05</div>
           <p class="q-text"
              data-sie="Welche Erfahrungen haben Sie bisher mit Versicherungen gemacht?"
@@ -794,7 +808,7 @@
         </div>
 
         <!-- F7 -->
-        <div class="card q-card full">
+        <div class="card q-card">
           <div class="q-num">Frage 07</div>
           <p class="q-text"
              data-sie="Wie oft sollen wir uns über diese Themen austauschen?"
@@ -861,7 +875,7 @@
         </div>
         <div class="card step-block">
           <div class="step-num">3</div>
-          <h3>Felder ermitteln</h3>
+          <h3>Bedarf ermitteln</h3>
           <p id="s5-step3"
              data-sie="Gemeinsam schauen wir, welche Themen für Sie relevant sind."
              data-du="Gemeinsam schauen wir, welche Themen für dich relevant sind."
@@ -928,7 +942,12 @@
       initials: 'AG',
       photo: 'adrian-portrait.jpg',
       color: '#003781',
-      steckbrief: 'Gelernter Sozialversicherungsfachangestellter und Krankenkassenbetriebswirt (AOK). Seit 2017 bei der Allianz – Inhaber einer Firmenfachagentur mit dem Schwerpunkt Firmen und umfassende Privatkundenberatung. In der Freizeit: Mountainbike und Golf.'
+      tiles: [
+        { icon: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>', label: 'Ausbildung', value: 'Sozialversicherungsfachangestellter & Krankenkassenbetriebswirt (AOK)' },
+        { icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>', label: 'Seit', value: '2017 bei der Allianz – Agenturinhaber' },
+        { icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>', label: 'Schwerpunkt', value: 'Firmenkunden & umfassende Privatkundenberatung' },
+        { icon: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>', label: 'Freizeit', value: 'Mountainbike & Golf' }
+      ]
     },
     {
       id: 'diana',
@@ -941,7 +960,7 @@
       initials: 'DB',
       photo: 'diana-portrait.jpg',
       color: '#0057A8',
-      steckbrief: 'Steckbrief folgt.'
+      tiles: []
     },
     {
       id: 'claudia',
@@ -954,7 +973,7 @@
       initials: 'CS',
       photo: 'claudia-portrait.jpg',
       color: '#0066CC',
-      steckbrief: 'Steckbrief folgt.'
+      tiles: []
     }
   ];
 
@@ -1072,7 +1091,17 @@
     document.getElementById('s2-bio').textContent        = person.bio;
     document.getElementById('s2-email').textContent      = person.email;
     document.getElementById('s2-phone').textContent      = person.phone;
-    document.getElementById('s2-steckbrief').textContent = person.steckbrief || '';
+    const sbGrid = document.getElementById('s2-steckbrief');
+    if (person.tiles && person.tiles.length) {
+      sbGrid.innerHTML = person.tiles.map(t => `
+        <div class="sb-tile">
+          <div class="sb-icon"><svg viewBox="0 0 24 24">${t.icon}</svg></div>
+          <div><div class="sb-label">${t.label}</div><div class="sb-value">${t.value}</div></div>
+        </div>`).join('');
+      document.getElementById('s2-steckbrief-block').style.display = '';
+    } else {
+      document.getElementById('s2-steckbrief-block').style.display = 'none';
+    }
     document.getElementById('s2-initials').textContent = person.initials;
     const s2photo = document.getElementById('s2-photo');
     s2photo.src = person.photo;
