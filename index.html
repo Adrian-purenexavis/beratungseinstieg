@@ -490,6 +490,32 @@
       color: #fff; cursor: pointer; transition: background 150ms;
     }
     .btn-next:hover { background: var(--blue); }
+
+    /* ── VERTIKALE ZENTRIERUNG Screens 3 + 5 ─────────────────── */
+    #screen-3.active { display: flex; flex-direction: column; justify-content: center; padding-top: 60px; }
+    #screen-5.active { display: flex; flex-direction: column; justify-content: center; padding-top: 40px; }
+
+    /* ── KI-NOTICE ───────────────────────────────────────────── */
+    .ki-notice {
+      display: flex; align-items: flex-start; gap: 12px;
+      margin-top: 14px; padding: 12px 16px;
+      background: var(--blue-light); border: 1px solid #C8D8EE;
+      border-radius: var(--radius-md);
+    }
+    .ki-notice-icon {
+      flex-shrink: 0; width: 20px; height: 20px;
+      color: var(--blue-mid); margin-top: 1px;
+    }
+    .ki-notice p { font-size: 12px; color: var(--blue); line-height: 1.55; margin: 0; }
+
+    /* ── AGENCY LEGAL BLOCK ──────────────────────────────────── */
+    .agency-legal-block { padding: 18px 30px; margin-top: 14px; }
+    .agency-legal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 0; }
+    .alb-section { }
+    .alb-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--label); margin-bottom: 4px; }
+    .alb-value { font-size: 12px; color: var(--text); line-height: 1.6; }
+    .alb-divider { height: 1px; background: var(--border-lt); margin: 14px 0; }
+    .alb-tarek { font-size: 12px; color: var(--muted); font-style: italic; }
   </style>
 </head>
 <body>
@@ -598,9 +624,38 @@
       <div class="welcome-steps">
         <div class="wstep"><div class="wstep-num">1</div><div class="wstep-text"><strong>Kennenlernen</strong> – Wir stellen uns und unser Team kurz vor.</div></div>
         <div class="wstep"><div class="wstep-num">2</div><div class="wstep-text" id="s1-card2" data-sie="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz." data-du="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für dich wichtig ist, besprechen wir kurz." data-ihr="<strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Euch wichtig ist, besprechen wir kurz."><strong>Erwartungen</strong> – Was für eine Zusammenarbeit für Sie wichtig ist, besprechen wir kurz.</div></div>
-        <div class="wstep"><div class="wstep-num">3</div><div class="wstep-text" id="s1-card3" data-sie="<strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind." data-du="<strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für dich relevant sind." data-ihr="<strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Euch relevant sind."><strong>Bedarf ermitteln</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind.</div></div>
+        <div class="wstep"><div class="wstep-num">3</div><div class="wstep-text" id="s1-card3" data-sie="<strong>Was ist Ihnen wichtig?</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind." data-du="<strong>Was ist dir wichtig?</strong> – Gemeinsam schauen wir, welche Themen für dich relevant sind." data-ihr="<strong>Was ist Euch wichtig?</strong> – Gemeinsam schauen wir, welche Themen für Euch relevant sind."><strong>Was ist Ihnen wichtig?</strong> – Gemeinsam schauen wir, welche Themen für Sie relevant sind.</div></div>
         <div class="wstep wstep-inactive"><div class="wstep-num">4</div><div class="wstep-text"><strong>Analyse</strong> – Auf Basis Ihrer Unterlagen erstellen wir eine strukturierte Auswertung und entscheiden gemeinsam, ob eine Zusammenarbeit sinnvoll ist.</div></div>
         <div class="wstep wstep-inactive"><div class="wstep-num">5</div><div class="wstep-text"><strong>Umsetzungsgespräch</strong> – Im zweiten Termin legen wir gemeinsam fest, welche Themen wir umsetzen.</div></div>
+      </div>
+
+      <div class="ki-notice">
+        <svg class="ki-notice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        <p data-sie="Hinweis: In dieser Beratung nutzen wir generative KI und Transkription zur Gesprächsdokumentation. Sind Sie damit einverstanden?"
+           data-du="Hinweis: In dieser Beratung nutzen wir generative KI und Transkription zur Gesprächsdokumentation. Bist du damit einverstanden?"
+           data-ihr="Hinweis: In dieser Beratung nutzen wir generative KI und Transkription zur Gesprächsdokumentation. Seid Ihr damit einverstanden?">
+          Hinweis: In dieser Beratung nutzen wir generative KI und Transkription zur Gesprächsdokumentation. Sind Sie damit einverstanden?
+        </p>
+      </div>
+
+      <div class="card agency-legal-block">
+        <div class="agency-legal-grid">
+          <div class="alb-section">
+            <div class="alb-label">Agentur</div>
+            <div class="alb-value">Allianz Agentur Gretzinger<br>Schloßhof 7 · 88339 Bad Waldsee<br>07524 91122</div>
+          </div>
+          <div class="alb-section">
+            <div class="alb-label">Registrierung</div>
+            <div class="alb-value">D-LXYB-H2RGL-59<br>Vermittlerregister DIHK<br>IHK Bodensee-Oberschwaben</div>
+          </div>
+        </div>
+        <div class="alb-divider"></div>
+        <div class="alb-section">
+          <div class="alb-label">Schlichtungsstellen</div>
+          <div class="alb-value">Versicherungsombudsmann e.V. · Ombudsmann Private Kranken- und Pflegeversicherung</div>
+        </div>
       </div>
     </div>
 
@@ -612,7 +667,10 @@
              data-sie="Wer begleitet Sie heute?"
              data-du="Wer begleitet dich heute?"
              data-ihr="Wer begleitet Euch heute?">Wer begleitet Sie heute?</p>
-          <h1 class="ph-title">Ihr Ansprechpartner</h1>
+          <h1 class="ph-title" id="s2-title"
+              data-sie="Ihr Ansprechpartner."
+              data-du="Dein Ansprechpartner."
+              data-ihr="Euer Ansprechpartner.">Ihr Ansprechpartner.</h1>
         </div>
         <div class="ph-illus">
           <svg viewBox="0 0 200 130" fill="none">
@@ -659,59 +717,11 @@
 
     <!-- ── Screen 3: Team ── -->
     <div class="screen" id="screen-3">
-      <div class="page-header">
-        <div class="page-header-text">
-          <p class="ph-question" id="s3-label"
-             data-sie="Das Team hinter Ihrer Beratung"
-             data-du="Das Team hinter deiner Beratung"
-             data-ihr="Das Team hinter Eurer Beratung">Das Team hinter Ihrer Beratung</p>
-          <h1 class="ph-title" id="s3-title"
-              data-sie="Wer sich um Sie kümmert."
-              data-du="Wer sich um dich kümmert."
-              data-ihr="Wer sich um Euch kümmert.">Wer sich um Sie kümmert.</h1>
-        </div>
-        <div class="ph-illus">
-          <svg viewBox="0 0 200 130" fill="none">
-            <ellipse cx="100" cy="120" rx="72" ry="7" fill="#E8EFF8"/>
-            <circle cx="68" cy="46" r="15" fill="#ADC4E0"/>
-            <rect x="52" y="66" width="32" height="36" rx="6" fill="#0057A8"/>
-            <circle cx="132" cy="46" r="15" fill="#C2D5EC"/>
-            <rect x="116" y="66" width="32" height="36" rx="6" fill="#003781"/>
-            <circle cx="100" cy="40" r="17" fill="#8BAED4"/>
-            <rect x="82" y="62" width="36" height="40" rx="7" fill="#0066CC"/>
-          </svg>
-        </div>
-      </div>
       <div class="team-grid" id="team-grid"></div>
     </div>
 
     <!-- ── Screen 4: Erwartungen ── -->
     <div class="screen" id="screen-4">
-      <div class="page-header">
-        <div class="page-header-text">
-          <p class="ph-question" id="s4-label"
-             data-sie="Was Ihnen wichtig ist"
-             data-du="Was dir wichtig ist"
-             data-ihr="Was Euch wichtig ist">Was Ihnen wichtig ist</p>
-          <h1 class="ph-title" id="s4-title"
-              data-sie="Ihre Erwartungen."
-              data-du="Deine Erwartungen."
-              data-ihr="Eure Erwartungen.">Ihre Erwartungen.</h1>
-        </div>
-        <div class="ph-illus">
-          <svg viewBox="0 0 200 130" fill="none">
-            <ellipse cx="100" cy="120" rx="65" ry="7" fill="#E8EFF8"/>
-            <rect x="52" y="28" width="96" height="72" rx="8" fill="#fff" stroke="#D8DCE0" stroke-width="1.5"/>
-            <line x1="68" y1="50" x2="132" y2="50" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
-            <line x1="68" y1="63" x2="118" y2="63" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
-            <line x1="68" y1="76" x2="108" y2="76" stroke="#D8DCE0" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="143" cy="40" r="3" fill="#0057A8"/>
-            <circle cx="143" cy="53" r="3" fill="#D8DCE0"/>
-            <circle cx="143" cy="66" r="3" fill="#D8DCE0"/>
-          </svg>
-        </div>
-      </div>
-
       <div class="q-grid">
 
         <!-- F1 -->
@@ -834,29 +844,6 @@
 
     <!-- ── Screen 5: Vorgehen ── -->
     <div class="screen" id="screen-5">
-      <div class="page-header">
-        <div class="page-header-text">
-          <p class="ph-question">So läuft unser Gespräch heute ab</p>
-          <h1 class="ph-title">Unser Vorgehen.</h1>
-        </div>
-        <div class="ph-illus">
-          <svg viewBox="0 0 200 130" fill="none">
-            <ellipse cx="100" cy="118" rx="65" ry="7" fill="#E8EFF8"/>
-            <circle cx="28" cy="65" r="12" fill="#0057A8"/>
-            <text x="28" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">1</text>
-            <line x1="40" y1="65" x2="66" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
-            <circle cx="78" cy="65" r="12" fill="#003781"/>
-            <text x="78" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">2</text>
-            <line x1="90" y1="65" x2="116" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
-            <circle cx="128" cy="65" r="12" fill="#0066CC"/>
-            <text x="128" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">3</text>
-            <line x1="140" y1="65" x2="162" y2="65" stroke="#ADC4E0" stroke-width="2" stroke-dasharray="4 3"/>
-            <circle cx="174" cy="65" r="12" fill="#FF6200" opacity="0.85"/>
-            <text x="174" y="70" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Arial">4</text>
-          </svg>
-        </div>
-      </div>
-
       <div class="steps-row" style="grid-template-columns: repeat(5,1fr);">
         <div class="card step-block">
           <div class="step-num">1</div>
@@ -875,7 +862,7 @@
         </div>
         <div class="card step-block">
           <div class="step-num">3</div>
-          <h3>Bedarf ermitteln</h3>
+          <h3 data-sie="Was ist Ihnen wichtig?" data-du="Was ist dir wichtig?" data-ihr="Was ist Euch wichtig?">Was ist Ihnen wichtig?</h3>
           <p id="s5-step3"
              data-sie="Gemeinsam schauen wir, welche Themen für Sie relevant sind."
              data-du="Gemeinsam schauen wir, welche Themen für dich relevant sind."
@@ -960,7 +947,12 @@
       initials: 'DB',
       photo: 'diana-portrait.jpg',
       color: '#0057A8',
-      tiles: []
+      tiles: [
+        { icon: '<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>', label: 'Ausbildung', value: 'Studium Ernährungsberatung · zuvor Easylife' },
+        { icon: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>', label: 'Seit', value: 'Januar 2025 bei der Allianz' },
+        { icon: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>', label: 'Schwerpunkt', value: 'Privatkundenberatung · persönliche Betreuung' },
+        { icon: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>', label: 'Freizeit', value: 'Tanzen & Sport' }
+      ]
     },
     {
       id: 'claudia',
