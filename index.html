@@ -510,6 +510,45 @@
 
     /* ── AGENCY LEGAL BLOCK ──────────────────────────────────── */
     .agency-legal-block { padding: 18px 30px; margin-top: 14px; }
+
+    /* ── CONTACT INVITE ─────────────────────────────────────── */
+    .contact-invite {
+      font-size: 12px; color: var(--muted); font-style: italic; margin-top: 6px;
+    }
+
+    /* ── TEAM PREVIEW STRIP (Screen 2) ──────────────────────── */
+    .team-preview-strip {
+      display: flex; align-items: center; gap: 12px;
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid var(--border-lt);
+    }
+    .tps-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--label); white-space: nowrap;
+    }
+    .tps-avatars { display: flex; gap: 6px; flex: 1; }
+    .tps-mini-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--blue-light); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: var(--blue); overflow: hidden;
+    }
+    .tps-mini-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .tps-arrow { font-size: 14px; color: var(--label); }
+
+    /* ── ADVISOR HINT CARDS (Screen 5) ──────────────────────── */
+    .advisor-hints { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .hint-card {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 18px; background: var(--bg-card);
+      border-radius: var(--radius-md); border-left: 4px solid var(--border);
+    }
+    .hint-recommend { border-left-color: #2CA05A; }
+    .hint-google    { border-left-color: #F4A700; }
+    .hint-icon { font-size: 20px; line-height: 1; flex-shrink: 0; margin-top: 2px; }
+    .hint-card strong { font-size: 13px; color: var(--text); display: block; margin-bottom: 3px; }
+    .hint-card p { font-size: 12px; color: var(--muted); margin: 0; line-height: 1.5; }
+    @media print { .no-print { display: none !important; } }
     .agency-legal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 0; }
     .alb-section { }
     .alb-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--label); margin-bottom: 4px; }
@@ -599,14 +638,21 @@
         </div>
         <div class="ph-illus">
           <svg viewBox="0 0 200 130" fill="none">
-            <ellipse cx="100" cy="120" rx="72" ry="7" fill="#E8EFF8"/>
-            <circle cx="62" cy="44" r="17" fill="#ADC4E0"/>
-            <rect x="44" y="66" width="36" height="44" rx="8" fill="#0057A8"/>
-            <circle cx="138" cy="44" r="17" fill="#C2D5EC"/>
-            <rect x="120" y="66" width="36" height="44" rx="8" fill="#003781"/>
-            <path d="M80 86 Q100 76 120 86" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none"/>
-            <circle cx="32" cy="22" r="4" fill="#FF6200" opacity="0.65"/>
-            <circle cx="168" cy="26" r="3" fill="#FF6200" opacity="0.45"/>
+            <ellipse cx="100" cy="122" rx="72" ry="7" fill="#E8EFF8"/>
+            <!-- Schild -->
+            <path d="M100 14 L143 34 L143 78 Q143 108 100 120 Q57 108 57 78 L57 34 Z" fill="#003781"/>
+            <path d="M100 24 L135 41 L135 78 Q135 102 100 112 Q65 102 65 78 L65 41 Z" fill="#0057A8"/>
+            <!-- A im Schild -->
+            <text x="100" y="83" text-anchor="middle" font-size="34" font-weight="900" fill="white" font-family="Arial,sans-serif">A</text>
+            <!-- Gefahren links -->
+            <circle cx="32" cy="56" r="14" fill="#FF6200" opacity="0.12"/>
+            <text x="32" y="62" text-anchor="middle" font-size="16" fill="#FF6200" opacity="0.65" font-family="Arial,sans-serif">⚡</text>
+            <!-- Gefahren rechts -->
+            <circle cx="168" cy="46" r="11" fill="#FF6200" opacity="0.10"/>
+            <text x="168" y="51" text-anchor="middle" font-size="14" fill="#FF6200" opacity="0.55" font-weight="700" font-family="Arial,sans-serif">!</text>
+            <!-- Akzent-Punkte -->
+            <circle cx="26" cy="30" r="3" fill="#FF6200" opacity="0.40"/>
+            <circle cx="174" cy="72" r="2.5" fill="#FF6200" opacity="0.32"/>
           </svg>
         </div>
       </div>
@@ -692,6 +738,12 @@
             <div class="contact-name" id="s2-name">Adrian Gretzinger</div>
             <div class="role-pill" id="s2-role">Agenturinhaber</div>
             <p class="contact-bio" id="s2-bio">Firmen- und Privatkundenberater. Direkter Ansprechpartner für Versicherung und Vorsorge.</p>
+            <p class="contact-invite" id="s2-invite"
+               data-sie="Wenn Sie etwas über mich wissen möchten, fragen Sie gerne."
+               data-du="Wenn du etwas über mich wissen möchtest, frag mich einfach."
+               data-ihr="Wenn Ihr etwas über mich wissen möchtet, fragt mich einfach.">
+              Wenn Sie etwas über mich wissen möchten, fragen Sie gerne.
+            </p>
             <div class="contact-details">
               <div class="detail-row">
                 <div class="detail-icon">
@@ -711,6 +763,11 @@
         <div class="steckbrief" id="s2-steckbrief-block">
           <div class="steckbrief-title">Steckbrief</div>
           <div class="steckbrief-grid" id="s2-steckbrief"></div>
+        </div>
+        <div class="team-preview-strip">
+          <div class="tps-label">Unser Team</div>
+          <div class="tps-avatars" id="s2-team-preview"></div>
+          <div class="tps-arrow">→</div>
         </div>
       </div>
     </div>
@@ -899,6 +956,27 @@
         </div>
         <button class="btn-pdf" onclick="generatePDF()">↓ Zusammenfassung als PDF</button>
       </div>
+
+      <div class="advisor-hints no-print">
+        <div class="hint-card hint-recommend">
+          <span class="hint-icon">🤝</span>
+          <div>
+            <strong>Empfehlungsfrage</strong>
+            <p id="s5-empfehlung"
+               data-sie="„Kennen Sie jemanden, dem unsere Beratung auch helfen könnte?""
+               data-du="„Kennst du jemanden, dem unsere Beratung auch helfen könnte?""
+               data-ihr="„Kennt Ihr jemanden, dem unsere Beratung auch helfen könnte?""
+            >„Kennen Sie jemanden, dem unsere Beratung auch helfen könnte?"</p>
+          </div>
+        </div>
+        <div class="hint-card hint-google">
+          <span class="hint-icon">⭐</span>
+          <div>
+            <strong>Google Bewertung</strong>
+            <p>Kurz nach der Beratung um eine Bewertung bitten — QR-Code oder Link direkt zuschicken.</p>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div><!-- /page-content -->
@@ -1011,6 +1089,7 @@
     document.getElementById('app').style.display = 'flex';
     buildStepNav();
     renderTeamGrid();
+    renderTeamPreview();
     showScreen(1);
   }
 
@@ -1121,6 +1200,14 @@
   }
 
   /* ── Team Grid ── */
+  function renderTeamPreview() {
+    document.getElementById('s2-team-preview').innerHTML = teamData.map(p => `
+      <div class="tps-mini-avatar" title="${p.name}">
+        <img src="${p.photo}" alt="${p.name}" onerror="this.style.display='none';this.parentElement.textContent='${p.initials}'">
+      </div>
+    `).join('');
+  }
+
   function renderTeamGrid() {
     document.getElementById('team-grid').innerHTML = teamData.map(p => `
       <div class="card team-card ${p.id === state.contactId ? 'highlight' : ''}">
