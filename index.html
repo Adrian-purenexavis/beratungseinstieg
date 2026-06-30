@@ -838,7 +838,7 @@
             Wie tief möchten Sie in fachliche Details einsteigen?
           </p>
           <div class="slider-wrap">
-            <div class="slider-labels"><span>Jedes Detail</span><span>Alltagstaugliche Lösung</span></div>
+            <div class="slider-labels"><span>Jedes Detail</span><span>Unterschrift einscannen</span></div>
             <div class="slider-track">
               <input id="q5" type="range" class="q-slider" min="1" max="10" value="5" step="1">
             </div>
@@ -1247,7 +1247,7 @@
 
     // Q5: Skala 1–10
     const q5val = parseInt(document.getElementById('q5').value);
-    const q5txt = q5val <= 2 ? 'Alltagstaugliche Lösung' : q5val <= 4 ? 'Eher pragmatisch' : q5val <= 6 ? 'Ausgewogen' : q5val <= 8 ? 'Eher detailliert' : 'Jedes Detail';
+    const q5txt = q5val <= 2 ? 'Jedes Detail' : q5val <= 4 ? 'Eher detailliert' : q5val <= 6 ? 'Alltagstaugliche Lösung' : q5val <= 8 ? 'Eher pragmatisch' : 'Unterschrift einscannen';
 
     const q6checked = [...document.querySelectorAll('#q6 .pill.checked')].map(p => p.textContent).join(', ') || '–';
     const q7sel     = document.querySelector('#q7 .radio-item.selected');

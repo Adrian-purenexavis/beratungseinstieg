@@ -502,7 +502,7 @@
           <div class="q-num">Frage 04</div>
           <p class="q-text">Wie tief möchten Sie in fachliche Details einsteigen?</p>
           <div class="slider-wrap">
-            <div class="slider-labels"><span>Jedes Detail</span><span>Alltagstaugliche Lösung</span></div>
+            <div class="slider-labels"><span>Jedes Detail</span><span>Unterschrift einscannen</span></div>
             <div class="slider-track">
               <input id="q5" type="range" class="q-slider" min="1" max="10" value="5" step="1">
             </div>
@@ -828,7 +828,7 @@
     const q4val = parseInt(document.getElementById('q4').value);
     const q4txt = q4val <= 2 ? 'Klar Preis' : q4val <= 4 ? 'Eher Preis' : q4val <= 7 ? 'Ausgewogen' : q4val <= 9 ? 'Eher Leistung' : 'Klar Leistung';
     const q5val = parseInt(document.getElementById('q5').value);
-    const q5txt = q5val <= 2 ? 'Alle Details' : q5val <= 4 ? 'Eher detailliert' : q5val <= 6 ? 'Ausgewogen' : q5val <= 8 ? 'Eher pragmatisch' : 'Alltagstaugliche Lösung';
+    const q5txt = q5val <= 2 ? 'Jedes Detail' : q5val <= 4 ? 'Eher detailliert' : q5val <= 6 ? 'Alltagstaugliche Lösung' : q5val <= 8 ? 'Eher pragmatisch' : 'Unterschrift einscannen';
     const q6checked = [...document.querySelectorAll('#q6 .pill.checked')].map(p => p.textContent).join(', ') || '–';
     const q1txt = document.getElementById('q1').value.trim() || '–';
     const q3txt = document.getElementById('q3').value.trim() || '–';
