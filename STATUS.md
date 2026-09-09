@@ -14,8 +14,7 @@ links:
 Einstiegsfragen für Kundengespräche, Ergebnis als PDF. Über GitHub Pages veröffentlicht.
 
 ## Nächster Schritt
-Offen — siehe die Fragen unten. Es ist bewusst keiner eingetragen,
-statt einen zu erfinden.
+Offen — siehe die Fragen weiter unten. Bewusst keiner eingetragen, statt einen zu erfinden.
 
 ## Warum jemand am Zug ist
 Ruht bis auf Weiteres. Läuft, es steht nichts an.
